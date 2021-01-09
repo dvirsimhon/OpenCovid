@@ -1,7 +1,7 @@
-# **YoloMask**
+# **OpenCoVid**
 
 <img src="https://in.bgu.ac.il/marketing/graphics/BGU.sig3-he-en-white.png" height="48px" align="right" /> 
-<img src="https://res.cloudinary.com/serfati/image/upload/v1609847964/yolomask_logo.png" height="90"/> 
+<img src="https://res.cloudinary.com/serfati/image/upload/v1605445665/OpenCoVid19/logo_ntvgyv.png" height="90"/> 
 
 <br>
 <br>
@@ -82,51 +82,7 @@ You can modify or contribute to this project by following the steps below:
 ## 📃 Usage  
 
 ### 🔌 Pre-trained model
-detect.py runs inference on a variety of sources, downloading models automatically from the latest YOLOv5 release and saving results to `runs/detect`.
-```bash
-$ python detect.py --source 0  # webcam
-                            file.jpg  # image 
-                            file.mp4  # video
-                            path/  # directory
-                            path/*.jpg  # glob
-                            rtsp://170.93.143.139/rtplive/470011e600ef003a004ee33696235daa  # rtsp stream
-                            rtmp://192.168.1.105/live/test  # rtmp stream
-                            http://112.50.243.8/PLTV/88888888/224/3221225900/1.m3u8  # http stream
-```
 
-To run inference on example images in `data/images`:
-```bash
-$ python detect.py --source data/images --weights yolomask.pt --conf 0.25
-```
-
-### 📐 **Own model**
-
-* **Creating Training and Validation sets**
-
-The labeled images have to be split in a training and a validation set. Splitting it 80-20 should be reasonable.
-
-The folder structure is as follows:
-```
-data  
-├── images  
-│   ├── train  
-│   └── val  
-├── labels  
-    ├── train  
-    └── val  
-```
-* **Training**
-
-To start the training simply run the `train.py` script.  
-Again this script can take a number of arguments, but for a first run you can just start it with the default parameters.
-The following options are needed and have default values:
-
--  `--epochs default=300`: Number of times that the whole dataset is iterated through. 30 was enough for our pre-trained model.
--  `--batch-size default=16`: the number of training examples in one forward/backward pass. The higher the batch size, the more GPU memory is needed.
--  `--cfg default='models/yolov5s.yaml`: general config file used for training
--  `--data' default='data/coco128.yaml`: yaml file containing information about training data
--  `--img-size default=[640, 640]`: image size for training. Images will be resized automatically to this resolution. Higher resolutions might lead to significantly longer training times.
-You can find another detailed guide to create your own dataset [here](https://github.com/ultralytics/yolov3/wiki/Train-Custom-Data).
 
 ## ⌨ Scripts:
 
