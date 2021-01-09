@@ -42,8 +42,8 @@ You can modify or contribute to this project by following the steps below:
   
 - [Clone](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository) to a location on your machine.  
  ```bash  
- # Clone the repository 
- $> git clone https://github.com/dvirsimhon/OpenCovid.git  
+ # Clone the repository with all submodules
+ $> git clone --recurse-submodules https://github.com/dvirsimhon/OpenCovid.git  
 
  # Navigate to the directory 
  $> cd OpenCovid
