@@ -1,0 +1,4 @@
+[submodule "yolomask"]
+	path = yolomask
+	url = https://github.com/Serfati/yolomask.git
+	branch = yolomask
