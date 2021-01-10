@@ -92,8 +92,13 @@ All the needed python packages can be found in the `requirements.txt` file.
 
 - Dataset is split into 2 sets:
 
-|_Set_|Number of images|Objects with mask|Objects without mask| |:--:|:--:|:--:|:--:| |**Training Set**| 2340 | 9050 |
-1586 | |**Validation Set**| 260 | 1005 | 176 | |**Total**|2600|10055|1762|
+
+|_Set_|Number of images|Objects with mask|Objects without mask| 
+|:--:|:--:|:--:|:--:| 
+|**Training Set**| 2340 | 9050 |1586 | 
+|**Validation Set**| 260 | 1005 | 176 | 
+|**Total**|2600|10055|1762|
+
 
 <br>
 
