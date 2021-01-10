@@ -93,9 +93,8 @@ You can modify or contribute to this project by following the steps below:
 
 ## ⌨ Scripts:
 
-- `train.pt` - training your object detection model
-- `test.py` - evaluate the test dataset
-- `detect.py` - runs inference on a variety of sources
+- `opencovid.py` - runs main application
+- `demo.py` - runs a simple demo on a video footage
 
 ## ⚖️ License  
   
