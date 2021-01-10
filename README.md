@@ -1,16 +1,18 @@
-# **OpenCoVid**
-
 <img src="https://in.bgu.ac.il/marketing/graphics/BGU.sig3-he-en-white.png" height="48px" align="right" /> 
 <img src="https://res.cloudinary.com/serfati/image/upload/v1605445665/OpenCoVid19/logo_ntvgyv.png" height="90"/> 
 
 <br>
 <br>
 
-Detect Faces with or without mask using [YoloV5](https://github.com/ultralytics/yolov5).
+😷 COVID-19 use cases powered by computer vision platform.
 
+for more information [click here.](https://serfati.github.io/open-covid/) 
 ## Description  
 
-Automatic systems to detect people wearing masks are becoming more and more important for public health.
+Today, unfortunately, everyone is familiar with the term "social distance". It's something we will have to live with for a while until everything returns to normal. I have developed an application using the TensorFlow Object Detection API for identifying and measuring the social distance between pedestrians.
+We will detect pedestrians and calculate the distance between them. We have used the `YoloV5` and `Faster R-CNN` models and we created some functions to improve the visualization of our predictions.
+
+Also we'll build an automatic systems to detect people wearing masks are becoming more and more important for public health.
 Be it for governments who might want to know how many people are actually wearing masks in crowded places like public trains; or businesses who are required by law to enforce the usage of masks within their facilities. 
 
 This projects aims to provide an easy framework to set up such a mask detection system with minimal effort.
@@ -33,8 +35,13 @@ You can modify or contribute to this project by following the steps below:
 **0. The pre-trained model can be downloaded from here.**  
  ```bash  
  # pretrained YoloV5 model
- $> wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1ZxGjMsfogaUGaWc0zuYCbOexJPbFmISv' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1ZxGjMsfogaUGaWc0zuYCbOexJPbFmISv" -O yolomask.pt && rm -rf /tmp/cookies.txt
- ```  
+ $> cd yolomask/weights
+ $> bash download_weights.sh
+
+ # pretrained Faster R-CNN model
+ $>
+ $>
+```  
   
 **1. Clone the repository**  
   
