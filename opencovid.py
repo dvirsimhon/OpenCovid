@@ -28,7 +28,7 @@ class FrameStream:
     def nextFrame(self):
         # Capture frame-by-frame, return ret (if has next frame) , frame (if exists)
         ret, f = self.cap.read()
-        return ret, Frame(f)
+        return ret, Frame(img=f)
 
 class FaceMaskEstimator:
     def detect(self, frame):
@@ -63,10 +63,20 @@ class OpenCoVid:
         self.frame_src = FrameStream(video_src)
 
     def add_analyze_filter(self,filter):
-        self.pipeline_filters.append(filter)
+        detect_op = getattr(filter, "detect", None)
+        if callable(detect_op):
+            self.pipeline_filters.append(filter)
 
     def stopAnalze(self):
         self.analyzing = False
+
+    def analyzeImg(self,imgPath):
+
+        frame = Frame(img=cv2.imread(imgPath))
+
+        for f in self.pipeline_filters:
+            f.detect(frame)
+        self.callback(frame)
 
     def analyze(self):
         self.analyzing = True
