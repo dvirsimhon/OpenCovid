@@ -107,6 +107,13 @@ All the needed python packages can be found in the `requirements.txt` file.
 
 ### 🔌 Pre-trained model
 
+## 🚦 Results:
+All results can be found on 🚀 Weights&Baises Logging platform [here](https://wandb.ai/serfati/YOLOv5/runs/pdi8u78e?workspace=user-serfati).
+
+<img src="https://api.wandb.ai/files/serfati/YOLOv5/pdi8u78e/media/images/Validation_5190_1.jpg" width="520"/> 
+<br>
+<img src="https://api.wandb.ai/files/serfati/YOLOv5/pdi8u78e/media/images/Results_5204_0.png" width="520"/> 
+
 ## ⌨ Scripts:
 
 - `opencovid.py` - runs main application
