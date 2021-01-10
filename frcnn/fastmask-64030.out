@@ -1,0 +1,10 @@
+Thu Jan 7 23:21:14 IST 2021
+
+SLURM_JOBID:		 64030
+SLURM_JOB_NODELIST:	 ise-gpu-02 
+
+
+  File "test.py", line 168
+    some = *test_dataset
+          ^
+SyntaxError: can't use starred expression here
