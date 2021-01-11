@@ -60,7 +60,7 @@ class face_mask_estimator_faster_rcnn:
 
         model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
 
-        checkpoint = torch.load("weights/last_checkpoint.pth", map_location=torch.device(device))
+        checkpoint = torch.load("frcnn/weights/last_checkpoint.pth", map_location=torch.device(device))
         model.load_state_dict(checkpoint['model_state_dict'])
         b = list(model.parameters())[0]
         model.to(device)
@@ -69,7 +69,7 @@ class face_mask_estimator_faster_rcnn:
         return model
 
 
-    def transform_image(image):
+    def transform_image(self, image):
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB).astype(np.float32)
         image /= 255.0
         transform = T.Compose([T.ToTensor()])
