@@ -40,6 +40,9 @@ You can modify or contribute to this project by following the steps below:
 
 **0. The pre-trained model can be downloaded from here.**
 
+for windows platform download weights: [frcnn](https://drive.google.com/file/d/1T_v-BfCmj6x-fa5UM3vmdPVxHDncph8t/view?usp=sharing), [yolo](https://drive.google.com/file/d/1ZxGjMsfogaUGaWc0zuYCbOexJPbFmISv/view
+)
+
  ```bash  
  # pretrained YoloV5 model
  $> cd yolomask/weights
