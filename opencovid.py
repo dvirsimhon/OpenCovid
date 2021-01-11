@@ -82,9 +82,8 @@ class OpenCoVid:
         self.set_frame_src(video_src)
         self.callback = callback
         self.fps_limit = fps_limit
-        self.f_count = 0
-        self.pipeline_filters = []
-        self.analyzing = False
+
+        self.reset()
 
     def reset(self):
         """ Stop and reset the analyze object, this method must be called before analyzing a second time """
