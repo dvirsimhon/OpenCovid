@@ -12,10 +12,10 @@ from torch.utils.tensorboard import SummaryWriter
 # Writer will output to ./runs/ directory by default
 writer = SummaryWriter()
 
-DIR_INPUT = "/storage/users/Ise4thYear/OpenCoVid/files/rcnn/data/"
-DIR_IMAGES = DIR_INPUT+'train/'
+DIR_INPUT = "C:\\Users\\Liron Simhon\\Desktop\\דביר\\לימודים\\שנה ד\\סמסטר א\\פרויקט גמר\\Data\\"
+DIR_IMAGES = DIR_INPUT+'for testing\\'
 
-df = pd.read_csv("train.csv")
+df = pd.read_csv("test.csv")
 
 # Total Classes
 classes = df["class"].unique()
@@ -101,9 +101,8 @@ dataset = FaceMaskDetectionDataset(df, DIR_IMAGES, mode = 'test', transforms=get
 
 # split the dataset in train and test set - 10% for validation
 indices = torch.randperm(len(dataset)).tolist()
-ranges = len(dataset) * 0.1
-test_dataset = torch.utils.data.Subset(dataset, indices[-round(ranges):])
-
+#ranges = len(dataset) * 0.1
+test_dataset = torch.utils.data.Subset(dataset, indices[:])
 
 test_data_loader = DataLoader(
     test_dataset,
@@ -112,7 +111,6 @@ test_data_loader = DataLoader(
     num_workers=2,
     collate_fn=collate_fn
 )
-
 
 # use GPU if possible, otherwise use CPU
 device = torch.device(
@@ -123,7 +121,7 @@ torch.cuda.empty_cache()
 # load model
 #Faster - RCNN Model - pretrained on COCO
 model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
-num_classes = len(class_to_int)
+num_classes = 2
 
 # get number of input features for the classifier
 in_features = model.roi_heads.box_predictor.cls_score.in_features
@@ -138,20 +136,15 @@ params = [p for p in model.parameters() if p.requires_grad]
 optimizer = torch.optim.SGD(params, lr=0.005, momentum=0.9)
 
 #Load pre-trained model
-checkpoint = torch.load("weights/fastmask.pth")
+checkpoint = torch.load("weights/fastmask.pth", map_location=torch.device(device))
 model.load_state_dict(checkpoint['model_state_dict'])
-optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-epoch = checkpoint['epoch']
-loss = checkpoint['loss']
 
 model.to(device)
-
-v_loss = []
+model.eval()
 
 start_time = time.time()
 
 
-'''model.eval()
 correct = 0
 total = 0
 for data in test_data_loader:
@@ -170,4 +163,3 @@ for data in test_data_loader:
 
 accuracy = correct / float(total)
 print(f'Testing Accuracy: {accuracy:.3f}')
-'''

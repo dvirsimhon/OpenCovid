@@ -24,10 +24,9 @@ unq_values = df["name"].unique()
 classes = df["class"].unique()
 
 # adding a background class for Faster R-CNN
-# _classes = np.insert(classes, 2, "person", axis=0)
-class_to_int = {classes[i]: i for i in range(len(classes))}
-int_to_class = {i: classes[i] for i in range(len(classes))}
-
+_classes = np.insert(classes, 0, "background", axis=0)
+class_to_int = {_classes[i]: i for i in range(len(_classes))}
+int_to_class = {i: _classes[i] for i in range(len(_classes))}
 
 # Creating Data (Labels & Targets) for Faster R-CNN
 class FaceMaskDetectionDataset(Dataset):
@@ -105,8 +104,8 @@ dataset = FaceMaskDetectionDataset(df, DIR_IMAGES, transforms=get_transform())
 
 # split the dataset in train and test set - using 90% for training, 10% for validation
 indices = torch.randperm(len(dataset)).tolist()
-range = len(dataset) * 0.1
-train_dataset = torch.utils.data.Subset(dataset, indices[:-round(range)])
+# range = len(dataset) * 0.1
+train_dataset = torch.utils.data.Subset(dataset, indices[:-195])
 
 
 # Preparing data loaders
@@ -150,7 +149,7 @@ lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=2, gamma=0.1
 model.to(device)
 
 # Number of epochs
-epochs = 100
+epochs = 80
 
 itr = 1
 total_train_loss = []
@@ -198,4 +197,6 @@ for epoch in np.arange(epochs):
         'model_state_dict': model.state_dict(),
         'optimizer_state_dict': optimizer.state_dict(),
         'loss': epoch_train_loss
-    }, "checkpoint.pth")
+    }, "last_checkpoint.pth")
+
+    # torch.save(model, "/")
