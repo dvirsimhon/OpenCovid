@@ -3,8 +3,7 @@ from opencovid import OpenCoVid
 
 ########################################################################################################################
 #                                                                                                                      #
-# Demo - How To Use 'OpenCoVid' Object, This Demo will Display the analyzed frame and will be able to save the result  #
-#        as a video file                                                                                               #
+# Demo - How To Use 'OpenCoVid' Object, This Demo will Display the analyzed frame                                      #
 #                                                                                                                      #
 ########################################################################################################################
 

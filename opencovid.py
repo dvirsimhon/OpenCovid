@@ -82,7 +82,9 @@ class OpenCoVid:
         self.set_frame_src(video_src)
         self.callback = callback
         self.fps_limit = fps_limit
-        self.reset()
+        self.f_count = 0
+        self.pipeline_filters = []
+        self.analyzing = False
 
     def reset(self):
         """ Stop and reset the analyze object, this method must be called before analyzing a second time """
@@ -92,7 +94,7 @@ class OpenCoVid:
         self.pipeline_filters = []
 
         # Populate Pipeline with basic filters
-        #self.add_analyze_filter(inference.YoloMask())
+        self.add_analyze_filter(inference.YoloMask())
         #self.add_analyze_filter(face_mask_estimator_faster_rcnn())
 
 
@@ -144,6 +146,6 @@ class OpenCoVid:
                 break
 
             self.apply_pipeline(frame)
+            self.f_count = self.f_count + 1
 
-            self.callback(frame)
 
