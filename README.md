@@ -46,8 +46,8 @@ You can modify or contribute to this project by following the steps below:
  $> bash download_weights.sh
 
  # pretrained Faster R-CNN model
- $>
- $>
+ $> cd rcnn/weights
+ $> bash download_weights.sh
 ```  
 
 **1. Clone the repository**
@@ -86,7 +86,8 @@ All the needed python packages can be found in the `requirements.txt` file.
 
 ### 2. Image Annotation
 
-- Images were annoted using [Yolo_mark](https://github.com/AlexeyAB/Yolo_mark).
+- YOLO: Images were annotated using [Yolo_mark](https://github.com/AlexeyAB/Yolo_mark).
+- FRCNN: Images were annotated using xml and csv format 
 
 ### 3. Dataset Description
 
@@ -105,6 +106,13 @@ All the needed python packages can be found in the `requirements.txt` file.
 ## 📃 Usage
 
 ### 🔌 Pre-trained model
+
+## 🚦 Results:
+All results can be found on 🚀 Weights&Baises Logging platform [here](https://wandb.ai/serfati/YOLOv5/runs/pdi8u78e?workspace=user-serfati).
+
+<img src="https://api.wandb.ai/files/serfati/YOLOv5/pdi8u78e/media/images/Validation_5190_1.jpg" width="520"/> 
+<br>
+<img src="https://api.wandb.ai/files/serfati/YOLOv5/pdi8u78e/media/images/Results_5204_0.png" width="520"/> 
 
 ## ⌨ Scripts:
 
