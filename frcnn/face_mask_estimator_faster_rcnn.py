@@ -16,7 +16,7 @@ from torchvision import transforms
 class face_mask_estimator_faster_rcnn:
     def detect(self, frame):
         model = self.load_model()
-        img = transfrom_image(frame.img)
+        img = self.transform_image(frame.img)
         output = model([img])
         bbox = output[0]['boxes'].data.cpu().numpy()
         bbox = pd.DataFrame(bbox)
@@ -69,7 +69,7 @@ class face_mask_estimator_faster_rcnn:
         return model
 
 
-    def transfrom_image(image):
+    def transform_image(image):
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB).astype(np.float32)
         image /= 255.0
         transform = T.Compose([T.ToTensor()])
