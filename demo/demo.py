@@ -52,7 +52,7 @@ def displayAnalyze(frame):
         cv2.rectangle(frame.img,start_p,end_p,(0,0,0) ,int(2 * fontScale))
         cv2.rectangle(frame.img, start_p, end_p, color, int(1 * fontScale))
 
-        txt_info = "{} {}".format(label, round(confidence, 3))
+        txt_info = "{} {}%".format(label, round(confidence * 100))
 
         cv2.putText(frame.img, txt_info, (x1, y1 - 5), font, (fontScale * 0.4), (0,0,0), int(2 * fontScale))
         cv2.putText(frame.img, txt_info, (x1, y1 - 5), font, (fontScale * 0.4), color, int(1 * fontScale))

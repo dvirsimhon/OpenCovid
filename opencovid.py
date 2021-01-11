@@ -3,7 +3,7 @@ import sys
 sys.path.insert(0, 'yolomask/')
 
 from yolomask import inference
-#from frcnn.face_mask_estimator_faster_rcnn import face_mask_estimator_faster_rcnn
+from frcnn.face_mask_estimator_faster_rcnn import face_mask_estimator_faster_rcnn
 
 class Frame:
 
@@ -93,8 +93,8 @@ class OpenCoVid:
         self.pipeline_filters = []
 
         # Populate Pipeline with basic filters
-        self.add_analyze_filter(inference.YoloMask())
-        #self.add_analyze_filter(face_mask_estimator_faster_rcnn())
+        #self.add_analyze_filter(inference.YoloMask())
+        self.add_analyze_filter(face_mask_estimator_faster_rcnn())
 
 
     def set_frame_src(self, video_src):
@@ -132,6 +132,8 @@ class OpenCoVid:
         for f in self.pipeline_filters:
             f.detect(frame)
         self.callback(frame)
+
+        return frame
 
     def analyze(self):
         """ Start analyzing the frame stream frame by frame until stream is over or stop/reset method is called """
