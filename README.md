@@ -119,6 +119,16 @@ All results can be found on 🚀 Weights&Baises Logging platform [here](https://
 - `opencovid.py` - runs main application
 - `demo.py` - runs a simple demo on a video footage
 
+## Team Members:  
+  
+| Name             | Username                                    | Contact Info            |  
+| ---------------- | ------------------------------------------- | ----------------------- |  
+| _Avihai Serfati_ | [serfati](https://github.com/serfati)       | serfata@post.bgu.ac.il  |  
+| _Assaf Attias_ | [attiasas93](https://github.com/attiasas) | assafattias93@gmail.com |  
+| _Dvir Simhon_ | [dvirsimhon](https://github.com/dvirsimhon) | dvirsim@post.bgu.ac.il  |
+
+**Team Supervisor:** Prof. Guy Shani  
+
 ## ⚖️ License
 
 This program is free software: you can redistribute it and/or modify it under the terms of the **MIT LICENSE** as
