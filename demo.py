@@ -1,18 +1,30 @@
 import cv2
 from opencovid import OpenCoVid
 
-print("cv version: " + cv2.__version__)
+########################################################################################################################
+#                                                                                                                      #
+# Demo - How To Use 'OpenCoVid' Object, This Demo will Display the analyzed frame and will be able to save the result  #
+#        as a video file                                                                                               #
+#                                                                                                                      #
+########################################################################################################################
 
-mask_color = (0,255,0)
-no_mask_color = (0,0,255)
+# == Demo Parameters =================================================
+WINDOW_NAME = "OpenCoVid Demo"          # App Window name
+display_speed = round(1000 / 60)        # App update window speed
 
-font = cv2.FONT_HERSHEY_SIMPLEX
-#fontScale = 0.5
-fontColor = (170,50,200)
-lineType = 2
-from utils.plots import plot_one_box
+video_src = "videoplayback.mp4"         # The Video Path to analyze
+
+mask_color = (0,255,0)                  # Mask On Display Color
+no_mask_color = (0,0,255)               # No Mask Display Color
+
+font = cv2.FONT_HERSHEY_SIMPLEX         # Display Font
+# ====================================================================
+
 def displayAnalyze(frame):
-
+    """
+    Callback Method That is passed to the 'OpenCoVid' Object
+    This method will visualize the analyzed information on the given frame and will be able to save the result
+    """
     w_x, w_y, w_w, w_h = cv2.getWindowImageRect(WINDOW_NAME)
     fontScale = frame.img.shape[1] / w_w
 
@@ -20,12 +32,11 @@ def displayAnalyze(frame):
     for info in frame.masks:
         bbox, confidence, label = info
         x1, y1, x2, y2 = bbox
-        print(bbox)
 
-        x1 = int(x1)#int((x1 / 640) * frame.img.shape[1])#
-        x2 = int(x2)#int((x2 / 640) * frame.img.shape[1])#
-        y1 = int(y1)#int((y1 / 640) * frame.img.shape[0])#
-        y2 = int(y2)#int((y2 / 640) * frame.img.shape[0])#
+        x1 = int(x1)
+        x2 = int(x2)
+        y1 = int(y1)
+        y2 = int(y2)
 
         start_p = (x1,y1)
         end_p = (x2,y2)
@@ -41,7 +52,6 @@ def displayAnalyze(frame):
 
         cv2.rectangle(frame.img,start_p,end_p,(0,0,0) ,int(2 * fontScale))
         cv2.rectangle(frame.img, start_p, end_p, color, int(1 * fontScale))
-        #plot_one_box(bbox, frame.img, label=label,color=color, line_thickness=1)
 
         txt_info = "{} {}".format(label, round(confidence, 3))
 
@@ -56,15 +66,22 @@ def displayAnalyze(frame):
 
     # Display img
     cv2.imshow(WINDOW_NAME, frame.img)
-    #cv2.resizeWindow(WINDOW_NAME, frame.img.shape[1], frame.img.shape[0] + 30)
 
     pressed_key = cv2.waitKey(display_speed)
-    if pressed_key == ord('q'):
+    if pressed_key == ord('q'):  # stop and close app
         ocv.stopAnalze()
 
 class MaskCounter:
-    def detect(self, frame):
+    """ This Class Is An Implementation Of A Analyze Filter that will be added to the pipeline """
 
+    def detect(self, frame):
+        """ Analyze the frame to have a statistical information on mask count
+
+        This filter will add the given attribute to the Frame object:
+        frame.mask_on_count (int): number of people with masks in the frame
+        frame.mask_off_count (int): number of people with out masks in the frame
+
+        """
         frame.mask_on_count = 0
         frame.mask_off_count = 0
 
@@ -81,27 +98,16 @@ class MaskCounter:
             else:
                 frame.mask_off_count = frame.mask_off_count + 1
 
-
-WINDOW_NAME = "OpenCoVid Demo"
+####################################################################################################
 
 cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
-#cv2.moveWindow(WINDOW_NAME, 20,20)
-#cv2.resizeWindow(WINDOW_NAME, 640,640)
-
-#cv2.setMouseCallback(WINDOW_NAME, mouse_listener)
-
-#video_src = "1.mp4"
-video_src = "3.mp4"
-#video_src = "videoplayback.mp4"
-
-display_speed = round(1000 / 60)
 
 # === OpenCoVid Lib Use =========================
 ocv = OpenCoVid(callback=displayAnalyze, video_src=video_src)
 
 ocv.add_analyze_filter(MaskCounter())
 
-#ocv.analyzeImg('3.jpg')
 ocv.analyze()
+# ===============================================
 
 cv2.destroyAllWindows()
