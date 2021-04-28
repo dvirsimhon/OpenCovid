@@ -1,9 +1,9 @@
 import cv2
 import sys
-sys.path.insert(0, 'yolomask/')
+# sys.path.insert(0, 'yolomask/')
 
-from yolomask import inference
-from frcnn.face_mask_estimator_faster_rcnn import face_mask_estimator_faster_rcnn
+# from yolomask import mask_inference
+# from frcnn.face_mask_estimator_faster_rcnn import face_mask_estimator_faster_rcnn
 
 class Frame:
 
@@ -94,7 +94,7 @@ class OpenCoVid:
 
         # Populate Pipeline with basic filters
         #self.add_analyze_filter(inference.YoloMask())
-        self.add_analyze_filter(face_mask_estimator_faster_rcnn())
+        # self.add_analyze_filter(face_mask_estimator_faster_rcnn())
 
 
     def set_frame_src(self, video_src):
@@ -131,6 +131,7 @@ class OpenCoVid:
         """
         for f in self.pipeline_filters:
             f.detect(frame)
+
         self.callback(frame)
 
         return frame
