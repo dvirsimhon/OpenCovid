@@ -67,18 +67,14 @@ class SocialDistance:
 
         # Calculate all permutations
         permutations = self.calculate_perm(centroids)
-
+        h, w, _ = frame.img.shape
+        dpi = 100
         # Display boxes and centroids
-        fig, ax = plt.subplots(figsize=(40, 24), dpi=90, frameon=False)
+        fig, ax = plt.subplots(figsize=(20, 15), dpi=dpi, frameon=False)
 
-        plt.axis('off')
+        # plt.axis('off')
         ax.axis('off')
-        ax.spines['top'].set_visible(False)
-        ax.spines['right'].set_visible(False)
-        ax.spines['bottom'].set_visible(False)
-        ax.spines['left'].set_visible(False)
-        ax.get_xaxis().set_ticks([])
-        ax.get_yaxis().set_ticks([])
+        ax.margins(0, 0)
         for coord, centr in zip(coordinates, centroids):
             ax.add_patch(patches.Rectangle(
                 (coord[0], coord[1]), coord[2], coord[3], linewidth=2, edgecolor='y', facecolor='none', zorder=10))
@@ -124,18 +120,16 @@ class SocialDistance:
             else:
                 pass
 
+        plt.tight_layout(pad=0)
         ax.imshow(cv2.cvtColor(frame.img, cv2.COLOR_BGR2RGB), interpolation='nearest')
 
         # This allows you to show the inference
-        plt.show()
-        fig.subplots_adjust(top=1, bottom=0, right=1, left=0,
-                            hspace=0, wspace=0)
-        # fig.margins(0, 0)
+        # plt.show()
 
-        ## This allows you to save each frame in a folder
+        # This allows you to save each frame in a folder
         # fig.savefig("TEST.png", bbox_inches='tight', pad_inches=0)
 
-        ## Convert figure to numpy
+        # Convert figure to numpy
         fig.canvas.draw()
         img = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
         img = img.reshape(fig.canvas.get_width_height()[::-1] + (3,))
@@ -143,12 +137,8 @@ class SocialDistance:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
         frame.img = img
-        # while True:
-        #     cv2.imshow("demo", frame.img)
-        #     k = cv2.waitKey(33) & 0xFF
-        #     if k == 27:
-        #         break
-        # plt.savefig("TEST_2.png", bbox_inches='tight', pad_inches=0)
+        return
+
 
 if __name__ == '__main__':
     persons = [((2714.0, 2232.0, 3009.0, 2595.0), 0.45305538177490234),

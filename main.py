@@ -113,10 +113,10 @@ cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
 # === OpenCoVid Lib Use =========================
 ocv = OpenCoVid(callback=displayAnalyze, video_src=video_src)
 
-ocv.add_analyze_filter(YoloMask())
-# ocv.add_analyze_filter(MaskCounter())
 ocv.add_analyze_filter(YoloPerson())
 ocv.add_analyze_filter(SocialDistance())
+ocv.add_analyze_filter(YoloMask())
+# ocv.add_analyze_filter(MaskCounter())
 
 ocv.analyze()
 # ===============================================
