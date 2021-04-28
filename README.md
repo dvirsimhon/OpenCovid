@@ -7,7 +7,7 @@
 😷 COVID-19 use cases powered by computer vision platform.
 
 for more information [click here.](https://serfati.github.io/open-covid/)
-v0.1
+v0.2
 ## Description
 
 Today, unfortunately, everyone is familiar with the term "social distance". It's something we will have to live with for
