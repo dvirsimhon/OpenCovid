@@ -10,8 +10,8 @@ class DrawLineWidget(object):
     def __init__(self, size_in_cm, img):
         self.original_image = img
         self.clone = self.original_image.copy()
-        cv2.namedWindow('image')
-        cv2.setMouseCallback('image', self.extract_coordinates)
+        cv2.namedWindow('Pixel-Meter')
+        cv2.setMouseCallback('Pixel-Meter', self.extract_coordinates)
         self.dist = 0
         self.size_in_cm = size_in_cm
         self.pixel_as_cm = 0
@@ -42,7 +42,7 @@ class DrawLineWidget(object):
             # Draw line
             self.clone = self.original_image.copy()
             cv2.line(self.clone, self.image_coordinates[0], self.image_coordinates[end], (36, 255, 12), 2)
-            cv2.imshow("image", self.clone)
+            cv2.imshow("Pixel-Meter", self.clone)
 
             pixels_in_meter = (dist / float(self.size_in_cm)) * 100
             print("Pixels in one meter: " + str(pixels_in_meter))
@@ -56,7 +56,7 @@ class DrawLineWidget(object):
                 end = len(self.image_coordinates) - 1
                 self.clone = self.original_image.copy()
                 cv2.line(self.clone, self.image_coordinates[0], self.image_coordinates[end], (36, 255, 12), 2)
-                cv2.imshow("image", self.clone)
+                cv2.imshow("Pixel-Meter", self.clone)
 
         # Record starting (x,y) coordinates on left mouse button click
         elif event == cv2.EVENT_LBUTTONDOWN:
@@ -92,10 +92,11 @@ def convert(frame):
     draw_line_widget = DrawLineWidget(size_in_cm, img)
 
     while True:
-        cv2.imshow('image', draw_line_widget.show_image())
+        cv2.imshow('Pixel-Meter', draw_line_widget.show_image())
         key = cv2.waitKey(1)
         # Close program with keyboard 'q'
         if key == 27 or key == ord('q'):
             # cv2.destroyAllWindows()
+            cv2.destroyWindow("Pixel-Meter")
             print(pixel_meter)
             return pixel_meter
