@@ -1,19 +1,20 @@
-import cv2
 import time
-import pandas as pd
+
+import cv2
 import numpy as np
+import pandas as pd
 import torch
 import torchvision
 import torchvision.transforms as T
-from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from torch.utils.data import DataLoader, Dataset
 from torch.utils.tensorboard import SummaryWriter
+from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 
 # Writer will output to ./runs/ directory by default
 writer = SummaryWriter()
 
 DIR_INPUT = "/storage/users/Ise4thYear/OpenCoVid/files/rcnn/data/"
-DIR_IMAGES = DIR_INPUT+'train/'
+DIR_IMAGES = DIR_INPUT + 'train/'
 
 df = pd.read_csv("train.csv")
 
@@ -27,6 +28,7 @@ classes = df["class"].unique()
 _classes = np.insert(classes, 0, "background", axis=0)
 class_to_int = {_classes[i]: i for i in range(len(_classes))}
 int_to_class = {i: _classes[i] for i in range(len(_classes))}
+
 
 # Creating Data (Labels & Targets) for Faster R-CNN
 class FaceMaskDetectionDataset(Dataset):
@@ -107,7 +109,6 @@ indices = torch.randperm(len(dataset)).tolist()
 # range = len(dataset) * 0.1
 train_dataset = torch.utils.data.Subset(dataset, indices[:-195])
 
-
 # Preparing data loaders
 train_data_loader = DataLoader(
     train_dataset,
@@ -117,13 +118,11 @@ train_data_loader = DataLoader(
     collate_fn=collate_fn
 )
 
-
 # use GPU if possible, otherwise use CPU
 
 device = torch.device(
     'cuda') if torch.cuda.is_available() else torch.device('cpu')
 torch.cuda.empty_cache()
-
 
 # Create / load model
 
@@ -160,7 +159,7 @@ for epoch in np.arange(epochs):
     train_loss = []
 
     for images, targets, image_names in train_data_loader:
-        
+
         # Loading images and targets
         images = list(image.to(device) for image in images)
         targets = [{k: v.to(device) for k, v in t.items()} for t in targets]

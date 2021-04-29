@@ -1,11 +1,12 @@
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-import numpy as np
-from random import randrange
-import math
 import itertools
+import math
+from random import randrange
+
 import cv2
-from PIL import Image
+import matplotlib.patches as patches
+import matplotlib.pyplot as plt
+import numpy as np
+
 from distance import pixel_meter
 
 
@@ -18,14 +19,11 @@ class SocialDistance:
 
         return [xmin, ymin, xmax - xmin, ymax - ymin]
 
-
     def calculate_centr(self, coord):
-        return (coord[0]+(coord[2]/2), coord[1]+(coord[3]/2))
-
+        return (coord[0] + (coord[2] / 2), coord[1] + (coord[3] / 2))
 
     def calculate_centr_distances(self, centroid_1, centroid_2):
-        return math.sqrt((centroid_2[0]-centroid_1[0])**2 + (centroid_2[1]-centroid_1[1])**2)
-
+        return math.sqrt((centroid_2[0] - centroid_1[0]) ** 2 + (centroid_2[1] - centroid_1[1]) ** 2)
 
     def calculate_perm(self, centroids):
         permutations = []
@@ -34,27 +32,26 @@ class SocialDistance:
                 permutations.append(current_permutation)
         return permutations
 
-
     def midpoint(self, p1, p2):
-        return ((p1[0] + p2[0])/2, (p1[1] + p2[1])/2)
-
+        return ((p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2)
 
     def calculate_slope(self, x1, y1, x2, y2):
-        if x2-x1 != 0:
-            m = (y2-y1)/(x2-x1)
+        if x2 - x1 != 0:
+            m = (y2 - y1) / (x2 - x1)
             return m
         return 0
 
     def detect(self, frame):
-        if not frame.persons: return
+        if not frame.persons:
+            return
 
         # Get width and height
         width, height = 1, 1
 
         # Pixel per meters
         # In this case, we are considering that 180px approximately is 1 meter
-        # average_px_meter = pixel_meter.convert(frame)
-        average_px_meter = 180
+        average_px_meter = pixel_meter.convert(frame)
+        # average_px_meter = 180
 
         # Calculate normalized coordinates for boxes
         centroids = []
@@ -84,7 +81,7 @@ class SocialDistance:
         # Display lines between centroids
         for perm in permutations:
             dist = self.calculate_centr_distances(perm[0], perm[1])
-            dist_m = dist/average_px_meter
+            dist_m = dist / average_px_meter
 
             # print("M meters: ", dist_m)
             middle = self.midpoint(perm[0], perm[1])
@@ -96,25 +93,29 @@ class SocialDistance:
             y2 = perm[1][1]
 
             slope = self.calculate_slope(x1, y1, x2, y2)
-            dy = math.sqrt(3**2/(slope**2+1))
-            dx = -slope*dy
+            dy = math.sqrt(3 ** 2 / (slope ** 2 + 1))
+            dx = -slope * dy
 
             # Display randomly the position of our distance text
             if randrange(10) % 2 == 0:
-                Dx = middle[0] - dx*10
-                Dy = middle[1] - dy*10
+                Dx = middle[0] - dx * 10
+                Dy = middle[1] - dy * 10
             else:
-                Dx = middle[0] + dx*10
-                Dy = middle[1] + dy*10
+                Dx = middle[0] + dx * 10
+                Dy = middle[1] + dy * 10
 
             if dist_m < 2.0:
-                ax.annotate("{}m".format(round(dist_m, 2)), xy=middle, color='white', xytext=(Dx, Dy), fontsize=10, arrowprops=dict(
-                    arrowstyle='->', lw=1.5, color='yellow'), bbox=dict(facecolor='red', edgecolor='white', boxstyle='round', pad=0.2), zorder=30)
+                ax.annotate("{}m".format(round(dist_m, 2)), xy=middle, color='white', xytext=(Dx, Dy), fontsize=10,
+                            arrowprops=dict(
+                                arrowstyle='->', lw=1.5, color='yellow'),
+                            bbox=dict(facecolor='red', edgecolor='white', boxstyle='round', pad=0.2), zorder=30)
                 ax.plot((perm[0][0], perm[1][0]), (perm[0][1], perm[1][1]),
                         linewidth=2, color='crimson', zorder=15)
             elif 2.0 < dist_m < 3.5:
-                ax.annotate("{}m".format(round(dist_m, 2)), xy=middle, color='black', xytext=(Dx, Dy), fontsize=6, arrowprops=dict(
-                    arrowstyle='->', lw=1, color='skyblue'), bbox=dict(facecolor='y', edgecolor='white', boxstyle='round', pad=0.2), zorder=30)
+                ax.annotate("{}m".format(round(dist_m, 2)), xy=middle, color='black', xytext=(Dx, Dy), fontsize=6,
+                            arrowprops=dict(
+                                arrowstyle='->', lw=1, color='skyblue'),
+                            bbox=dict(facecolor='y', edgecolor='white', boxstyle='round', pad=0.2), zorder=30)
                 ax.plot((perm[0][0], perm[1][0]), (perm[0][1], perm[1][1]),
                         linewidth=0.5, color='skyblue', zorder=15)
             else:
@@ -157,8 +158,11 @@ if __name__ == '__main__':
                ((166.0, 2397.0, 393.0, 2894.0), 0.8230567574501038),
                ((348.0, 2274.0, 605.0, 2823.0), 0.8839704394340515)]
 
+
     class Frame:
         img = cv2.imread('ptt.jpg')
+
+
     frame = Frame()
     frame.persons = persons
     dist = SocialDistance()

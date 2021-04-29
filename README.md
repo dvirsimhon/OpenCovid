@@ -8,6 +8,7 @@
 
 for more information [click here.](https://serfati.github.io/open-covid/)
 v0.2
+
 ## Description
 
 Today, unfortunately, everyone is familiar with the term "social distance". It's something we will have to live with for
@@ -40,7 +41,9 @@ You can modify or contribute to this project by following the steps below:
 
 **0. The pre-trained model can be downloaded from here.**
 
-for windows platform download weights: [frcnn](https://drive.google.com/file/d/1T_v-BfCmj6x-fa5UM3vmdPVxHDncph8t/view?usp=sharing), [yolo](https://drive.google.com/file/d/1ZxGjMsfogaUGaWc0zuYCbOexJPbFmISv/view
+for windows platform download
+weights: [frcnn](https://drive.google.com/file/d/1T_v-BfCmj6x-fa5UM3vmdPVxHDncph8t/view?usp=sharing)
+, [yolo](https://drive.google.com/file/d/1ZxGjMsfogaUGaWc0zuYCbOexJPbFmISv/view
 )
 
  ```bash  
@@ -90,18 +93,14 @@ All the needed python packages can be found in the `requirements.txt` file.
 ### 2. Image Annotation
 
 - YOLO: Images were annotated using [Yolo_mark](https://github.com/AlexeyAB/Yolo_mark).
-- FRCNN: Images were annotated using xml and csv format 
+- FRCNN: Images were annotated using xml and csv format
 
 ### 3. Dataset Description
 
 - Dataset is split into 2 sets:
 
-
-|_Set_|Number of images|Objects with mask|Objects without mask| 
-|:--:|:--:|:--:|:--:| 
-|**Training Set**| 2340 | 9050 |1586 | 
-|**Validation Set**| 260 | 1005 | 176 | 
-|**Total**|2600|10055|1762|
+|_Set_|Number of images|Objects with mask|Objects without mask| |:--:|:--:|:--:|:--:| |**Training Set**| 2340 | 9050
+|1586 | |**Validation Set**| 260 | 1005 | 176 | |**Total**|2600|10055|1762|
 
 
 <br>
@@ -111,7 +110,9 @@ All the needed python packages can be found in the `requirements.txt` file.
 ### 🔌 Pre-trained model
 
 ## 🚦 Results:
-All results can be found on 🚀 Weights&Baises Logging platform [here](https://wandb.ai/serfati/YOLOv5/runs/pdi8u78e?workspace=user-serfati).
+
+All results can be found on 🚀 Weights&Baises Logging
+platform [here](https://wandb.ai/serfati/YOLOv5/runs/pdi8u78e?workspace=user-serfati).
 
 <img src="https://api.wandb.ai/files/serfati/YOLOv5/pdi8u78e/media/images/Validation_5190_1.jpg" width="520"/> 
 <br>
@@ -122,15 +123,15 @@ All results can be found on 🚀 Weights&Baises Logging platform [here](https://
 - `opencovid.py` - runs main application
 - `demo.py` - runs a simple demo on a video footage
 
-## Team Members:  
-  
+## Team Members:
+
 | Name             | Username                                    | Contact Info            |  
 | ---------------- | ------------------------------------------- | ----------------------- |  
 | _Avihai Serfati_ | [serfati](https://github.com/serfati)       | serfata@post.bgu.ac.il  |  
 | _Assaf Attias_ | [attiasas93](https://github.com/attiasas) | assafattias93@gmail.com |  
 | _Dvir Simhon_ | [dvirsimhon](https://github.com/dvirsimhon) | dvirsim@post.bgu.ac.il  |
 
-**Team Supervisor:** Prof. Guy Shani  
+**Team Supervisor:** Prof. Guy Shani
 
 ## ⚖️ License
 

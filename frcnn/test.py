@@ -1,19 +1,20 @@
-import cv2
 import time
-import pandas as pd
+
+import cv2
 import numpy as np
+import pandas as pd
 import torch
 import torchvision
 import torchvision.transforms as T
-from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from torch.utils.data import DataLoader, Dataset
 from torch.utils.tensorboard import SummaryWriter
+from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 
 # Writer will output to ./runs/ directory by default
 writer = SummaryWriter()
 
 DIR_INPUT = "C:\\Users\\Liron Simhon\\Desktop\\דביר\\לימודים\\שנה ד\\סמסטר א\\פרויקט גמר\\Data\\"
-DIR_IMAGES = DIR_INPUT+'for testing\\'
+DIR_IMAGES = DIR_INPUT + 'for testing\\'
 
 df = pd.read_csv("test.csv")
 
@@ -24,6 +25,7 @@ classes = df["class"].unique()
 # _classes = np.insert(classes, 2, "person", axis=0)
 class_to_int = {classes[i]: i for i in range(len(classes))}
 int_to_class = {i: classes[i] for i in range(len(classes))}
+
 
 # Creating Data (Labels & Targets) for Faster R-CNN
 class FaceMaskDetectionDataset(Dataset):
@@ -97,11 +99,11 @@ def collate_fn(batch):
 
 
 # Dataset object
-dataset = FaceMaskDetectionDataset(df, DIR_IMAGES, mode = 'test', transforms=get_transform())
+dataset = FaceMaskDetectionDataset(df, DIR_IMAGES, mode='test', transforms=get_transform())
 
 # split the dataset in train and test set - 10% for validation
 indices = torch.randperm(len(dataset)).tolist()
-#ranges = len(dataset) * 0.1
+# ranges = len(dataset) * 0.1
 test_dataset = torch.utils.data.Subset(dataset, indices[:])
 
 test_data_loader = DataLoader(
@@ -117,9 +119,8 @@ device = torch.device(
     'cuda') if torch.cuda.is_available() else torch.device('cpu')
 torch.cuda.empty_cache()
 
-
 # load model
-#Faster - RCNN Model - pretrained on COCO
+# Faster - RCNN Model - pretrained on COCO
 model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
 num_classes = 2
 
@@ -129,13 +130,13 @@ in_features = model.roi_heads.box_predictor.cls_score.in_features
 # replace the pre-trained head with a new one
 model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
 
-#Set trainable parameters from model (for optimizer)
+# Set trainable parameters from model (for optimizer)
 params = [p for p in model.parameters() if p.requires_grad]
 
-#Defininig Optimizer
+# Defininig Optimizer
 optimizer = torch.optim.SGD(params, lr=0.005, momentum=0.9)
 
-#Load pre-trained model
+# Load pre-trained model
 checkpoint = torch.load("weights/fastmask.pth", map_location=torch.device(device))
 model.load_state_dict(checkpoint['model_state_dict'])
 
@@ -143,7 +144,6 @@ model.to(device)
 model.eval()
 
 start_time = time.time()
-
 
 correct = 0
 total = 0

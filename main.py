@@ -1,5 +1,7 @@
-import cv2
 import sys
+
+import cv2
+
 sys.path.insert(0, 'yolomask/')
 from yolomask.mask_inference import YoloMask
 from yolomask.person_inference import YoloPerson
@@ -14,15 +16,17 @@ from distance.social_distance import SocialDistance
 ########################################################################################################################
 
 # == Demo Parameters =================================================
-WINDOW_NAME = "OpenCoVid Demo"          # App Window name
-display_speed = round(1000 / 60)        # App update window speed
+WINDOW_NAME = "OpenCoVid Demo"  # App Window name
+display_speed = round(1000 / 60)  # App update window speed
 
 video_src = 0  # The Video Path to analyze
 
-mask_color = (169, 203, 145)                  # Mask On Display Color
-no_mask_color = (108, 108, 199)               # No Mask Display Color
+mask_color = (169, 203, 145)  # Mask On Display Color
+no_mask_color = (108, 108, 199)  # No Mask Display Color
 
-font = cv2.FONT_HERSHEY_SIMPLEX         # Display Font
+font = cv2.FONT_HERSHEY_SIMPLEX  # Display Font
+
+
 # ====================================================================
 
 def displayAnalyze(frame):
@@ -43,8 +47,8 @@ def displayAnalyze(frame):
         y1 = int(y1)
         y2 = int(y2)
 
-        start_p = (x1,y1)
-        end_p = (x2,y2)
+        start_p = (x1, y1)
+        end_p = (x2, y2)
 
         color = no_mask_color
         if label == 0.0:
@@ -55,12 +59,12 @@ def displayAnalyze(frame):
         if label == 'mask':
             color = mask_color
 
-        cv2.rectangle(frame.img,start_p,end_p,(0,0,0) ,int(2 * fontScale))
+        cv2.rectangle(frame.img, start_p, end_p, (0, 0, 0), int(2 * fontScale))
         cv2.rectangle(frame.img, start_p, end_p, color, int(1 * fontScale))
 
         txt_info = "{} {}%".format(label, round(confidence * 100))
 
-        cv2.putText(frame.img, txt_info, (x1, y1 - 5), font, (fontScale * 0.4), (0,0,0), int(2 * fontScale))
+        cv2.putText(frame.img, txt_info, (x1, y1 - 5), font, (fontScale * 0.4), (0, 0, 0), int(2 * fontScale))
         cv2.putText(frame.img, txt_info, (x1, y1 - 5), font, (fontScale * 0.4), color, int(1 * fontScale))
 
     # Draw Mask Counter info
@@ -75,6 +79,7 @@ def displayAnalyze(frame):
     pressed_key = cv2.waitKey(display_speed)
     if pressed_key == ord('q'):  # stop and close app
         ocv.stopAnalze()
+
 
 class MaskCounter:
     """ This Class Is An Implementation Of A Analyze Filter that will be added to the pipeline """
@@ -102,8 +107,6 @@ class MaskCounter:
                 frame.mask_on_count = frame.mask_on_count + 1
             else:
                 frame.mask_off_count = frame.mask_off_count + 1
-
-
 
 
 ####################################################################################################

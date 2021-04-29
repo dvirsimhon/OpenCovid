@@ -1,5 +1,6 @@
 import cv2
-import sys
+
+
 # sys.path.insert(0, 'yolomask/')
 
 # from yolomask import mask_inference
@@ -15,6 +16,7 @@ class Frame:
 
         """
         self.img = img
+
 
 class FrameStream:
 
@@ -35,7 +37,7 @@ class FrameStream:
             apiID = cv2.CAP_ANY  # 0 = autodetect default API
             self.cap.open(deviceID, apiID)
 
-    def getStreamInfo(self,propId):
+    def getStreamInfo(self, propId):
         """ Get Property information on the frame stream
 
         Parameters:
@@ -47,7 +49,7 @@ class FrameStream:
         """
         return self.cap.get(propId)
 
-    def setStreamInfo(self,propId, val):
+    def setStreamInfo(self, propId, val):
         """ Set Property information on the frame stream
 
         Parameters:
@@ -68,8 +70,9 @@ class FrameStream:
         ret, f = self.cap.read()
         return ret, Frame(img=f)
 
+
 class OpenCoVid:
-    def __init__(self,callback, video_src=0, fps_limit=60):
+    def __init__(self, callback, video_src=0, fps_limit=60):
         """ Constructor to the OpenCoVid Analyze pipeline object
 
         Parameters:
@@ -93,9 +96,8 @@ class OpenCoVid:
         self.pipeline_filters = []
 
         # Populate Pipeline with basic filters
-        #self.add_analyze_filter(inference.YoloMask())
+        # self.add_analyze_filter(inference.YoloMask())
         # self.add_analyze_filter(face_mask_estimator_faster_rcnn())
-
 
     def set_frame_src(self, video_src):
         """ Set the Frame Stream source to the OpenCoVid Analyze pipeline object
@@ -106,7 +108,7 @@ class OpenCoVid:
         """
         self.frame_src = FrameStream(video_src)
 
-    def add_analyze_filter(self,filter):
+    def add_analyze_filter(self, filter):
         """ Add a new filter to the end of the pipeline (before callback), if reset() is called the filter will be deleted
 
         Parameters:
@@ -141,13 +143,11 @@ class OpenCoVid:
         self.analyzing = True
 
         while self.analyzing:
-            #self.frame_src.setStreamInfo(cv2.CAP_PROP_POS_MSEC,(self.f_count * 100))  # not extract every frame, limit that one frame every second
+            # self.frame_src.setStreamInfo(cv2.CAP_PROP_POS_MSEC,(self.f_count * 100))  # not extract every frame, limit that one frame every second
             ret, frame = self.frame_src.nextFrame()
 
-            if not ret: # frame src closed/no more frames
+            if not ret:  # frame src closed/no more frames
                 break
 
             self.apply_pipeline(frame)
             self.f_count = self.f_count + 1
-
-
