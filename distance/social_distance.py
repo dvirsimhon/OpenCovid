@@ -11,6 +11,7 @@ from distance import pixel_meter
 
 
 class SocialDistance:
+
     def calculate_coord(self, bbox, width, height):
         xmin = bbox[0] * width
         ymin = bbox[1] * height
@@ -43,6 +44,20 @@ class SocialDistance:
 
     def detect(self, frame):
         if not frame.persons:
+            fig, ax = plt.subplots(figsize=(20, 15), dpi=100, frameon=False)
+            ax.imshow(cv2.cvtColor(frame.img, cv2.COLOR_BGR2RGB), interpolation='nearest')
+            ax.annotate("No Persons Detected!", xy=(frame.img.shape[0]/2, frame.img.shape[1]/2), color='white', xytext=(frame.img.shape[0]/2, frame.img.shape[1]/2.5-10), fontsize=30,
+                        bbox=dict(facecolor='#52c4ac', edgecolor='white', boxstyle='round', pad=0.2), zorder=30)
+            ax.axis('off')
+            ax.margins(0, 0)
+            plt.tight_layout(pad=0)
+            fig.canvas.draw()
+            img = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
+            img = img.reshape(fig.canvas.get_width_height()[::-1] + (3,))
+            img = np.array(fig.canvas.get_renderer()._renderer)
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            frame.violations = 0
+            frame.img = img
             return
 
         # Get width and height
@@ -50,8 +65,8 @@ class SocialDistance:
 
         # Pixel per meters
         # In this case, we are considering that 180px approximately is 1 meter
-        average_px_meter = pixel_meter.convert(frame)
-        # average_px_meter = 180
+        # average_px_meter = pixel_meter.convert(frame)
+        average_px_meter = 180
 
         # Calculate normalized coordinates for boxes
         centroids = []
@@ -78,6 +93,7 @@ class SocialDistance:
             ax.add_patch(patches.Circle(
                 (centr[0], centr[1]), 3, color='yellow', zorder=20))
 
+        violations = 0
         # Display lines between centroids
         for perm in permutations:
             dist = self.calculate_centr_distances(perm[0], perm[1])
@@ -105,6 +121,7 @@ class SocialDistance:
                 Dy = middle[1] + dy * 10
 
             if dist_m < 2.0:
+                violations += 1
                 ax.annotate("{}m".format(round(dist_m, 2)), xy=middle, color='white', xytext=(Dx, Dy), fontsize=10,
                             arrowprops=dict(
                                 arrowstyle='->', lw=1.5, color='yellow'),
@@ -136,7 +153,7 @@ class SocialDistance:
         img = img.reshape(fig.canvas.get_width_height()[::-1] + (3,))
         img = np.array(fig.canvas.get_renderer()._renderer)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
+        frame.violations = violations
         frame.img = img
         return
 
