@@ -67,6 +67,9 @@ weights: [frcnn](https://drive.google.com/file/d/1T_v-BfCmj6x-fa5UM3vmdPVxHDncph
  # Clone the repository with all submodules
  $> git clone --recurse-submodules https://github.com/dvirsimhon/OpenCovid.git  
 
+ # to update submodules HEAD 
+ $>git submodule update --remote --merge 
+ 
  # Navigate to the directory 
  $> cd OpenCovid
   ``` 

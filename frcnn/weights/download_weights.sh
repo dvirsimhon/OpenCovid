@@ -4,7 +4,7 @@
 #    $ bash weights/download_weights.sh
 
 # python - <<EOF
-# from utils.google_utils import attempt_download
+# from lib.google_utils import attempt_download
 
 # for x in ['m']:
 #     attempt_download(f'yolov5{x}.pt')
