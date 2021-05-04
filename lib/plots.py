@@ -1,4 +1,5 @@
 from lib.config import *
+import lib.config as globals
 import random
 
 
@@ -21,7 +22,8 @@ def display_analyze(frame):
     Callback Method That is passed to the 'OpenCoVid' Object
     This method will visualize the analyzed information on the given frame and will be able to save the result
     """
-    w_x, w_y, w_w, w_h = cv2.getWindowImageRect(WINDOW_NAME)
+    #TODO ZeroDivisionError
+    w_x, w_y, w_w, w_h = cv2.getWindowImageRect(globals.project)
     font_scale = frame.img.shape[1] / w_w
     frame_cpy = frame.img.copy()
     bottom_left_corner_of_text = (10, frame.img.shape[0] - 10)
@@ -82,7 +84,8 @@ def display_analyze(frame):
                     font, (font_scale * 0.5), safe_color, int(2 * font_scale))
 
     # Display img
-    cv2.imshow(WINDOW_NAME, frame.img)
-    pressed_key = cv2.waitKey(display_speed)
+    cv2.imshow(globals.project, frame.img)
+    pressed_key = cv2.waitKey(globals.rate)
     if pressed_key == ord('q'):  # stop and close app
+        print(shutdown_ascii)
         sys.exit(1)

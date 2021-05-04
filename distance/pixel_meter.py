@@ -1,11 +1,11 @@
 import math
-import string
+
+import cv2
 
 from lib.config import *
 
 mouse_pressed = False
 pixel_meter = -1
-
 
 class DrawLineWidget(object):
     def __init__(self, size_in_cm, img):
@@ -46,7 +46,7 @@ class DrawLineWidget(object):
 
             # Draw line
             self.clone = self.original_image.copy()
-            cv2.line(self.clone, self.image_coordinates[0], self.image_coordinates[end], (36, 255, 12), 2)
+            cv2.line(self.clone, self.image_coordinates[0], self.image_coordinates[end], (107, 209, 67), 2, cv2.LINE_AA)
             cv2.imshow("Pixel-Meter", self.clone)
 
             pixels_in_meter = (dist / float(self.size_in_cm)) * 100
@@ -63,7 +63,7 @@ class DrawLineWidget(object):
                 # Draw line
                 end = len(self.image_coordinates) - 1
                 self.clone = self.original_image.copy()
-                cv2.line(self.clone, self.image_coordinates[0], self.image_coordinates[end], (36, 255, 12), 2)
+                cv2.line(self.clone, self.image_coordinates[0], self.image_coordinates[end], (67, 76, 209), 2, cv2.LINE_AA)
                 cv2.imshow("Pixel-Meter", self.clone)
 
         # Record starting (x,y) coordinates on left mouse button click
@@ -81,8 +81,8 @@ class DrawLineWidget(object):
 
 
 def convert(frame):
-    if pixel_meter != -1:
-        return pixel_meter
+    if pixel_meter != -1: return pixel_meter
+
     print(Cyan+"SETUP\nEnter Object of Reference size in CM:"+Bold+White)
     size_in_cm = input()
     img = frame.img
@@ -97,12 +97,10 @@ def convert(frame):
             scaling_factor = max_width / float(width)
         # resize image
         img = cv2.resize(img, None, fx=scaling_factor, fy=scaling_factor, interpolation=cv2.INTER_AREA)
-
     draw_line_widget = DrawLineWidget(size_in_cm, img)
-
     while True:
         cv2.imshow('Pixel-Meter', draw_line_widget.show_image())
-        key = cv2.waitKey(1)
+        key = cv2.waitKey(10)
         # Close program with keyboard 'q'
         if key == 27 or key == ord('q'):
             # cv2.destroyAllWindows()

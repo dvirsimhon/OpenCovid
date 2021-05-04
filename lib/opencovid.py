@@ -1,5 +1,6 @@
 import time
 from lib.config import *
+import lib.config as globals
 
 class Frame:
 
@@ -77,6 +78,9 @@ class OpenCoVid:
         fps_limit (int): maximum number of frames to analyze per second
 
         """
+        cv2.namedWindow(globals.project, cv2.WINDOW_NORMAL)  # open main window
+        cv2.setWindowProperty(globals.project, cv2.WND_PROP_TOPMOST, 1)  # set window always on top
+
         self.set_frame_src(video_src)
         self.callback = callback
         self.fps_limit = fps_limit
@@ -131,7 +135,9 @@ class OpenCoVid:
         """
         for f in self.pipeline_filters:
             f.detect(frame)
-        self.callback(frame)
+
+        if globals.show_inf:
+            self.callback(frame)
         return frame
 
     def analyze(self):
