@@ -1,4 +1,5 @@
-import cv2
+import time
+from lib.config import *
 
 class Frame:
 
@@ -43,7 +44,7 @@ class FrameStream:
         """
         return self.cap.get(propId)
 
-    def setStreamInfo(self, propId, val):
+    def set_stream_info(self, propId, val):
         """ Set Property information on the frame stream
 
         Parameters:
@@ -53,7 +54,7 @@ class FrameStream:
         """
         return self.cap.set(propId, val)
 
-    def nextFrame(self):
+    def next_frame(self):
         """ Get the next frame in the stream if exist one.
 
         Returns:
@@ -79,13 +80,16 @@ class OpenCoVid:
         self.set_frame_src(video_src)
         self.callback = callback
         self.fps_limit = fps_limit
-
+        self.f_count = 0
+        self.pipeline_filters = []
+        self.frame_src = FrameStream(video_src)
+        self.analyzing = None
         self.reset()
 
     def reset(self):
         """ Stop and reset the analyze object, this method must be called before analyzing a second time """
         # reset vars
-        self.stopAnalze()
+        self.stop_analyze()
         self.f_count = 0
         self.pipeline_filters = []
 
@@ -114,7 +118,7 @@ class OpenCoVid:
         if callable(detect_op):
             self.pipeline_filters.append(filter)
 
-    def stopAnalze(self):
+    def stop_analyze(self):
         """ This Method Stop analyzing the frame stream """
         self.analyzing = False
 
@@ -127,21 +131,28 @@ class OpenCoVid:
         """
         for f in self.pipeline_filters:
             f.detect(frame)
-
         self.callback(frame)
-
         return frame
 
     def analyze(self):
         """ Start analyzing the frame stream frame by frame until stream is over or stop/reset method is called """
-        self.analyzing = True
 
+        self.analyzing = True
+        print(analyzing_ascii)
         while self.analyzing:
-            # self.frame_src.setStreamInfo(cv2.CAP_PROP_POS_MSEC,(self.f_count * 100))  # not extract every frame, limit that one frame every second
-            ret, frame = self.frame_src.nextFrame()
+            # self.frame_src.setStreamInfo(cv2.CAP_PROP_POS_MSEC,(self.f_count * 100))  # not extract every frame,
+            # limit that one frame every second
+            t0 = time.time()
+
+            ret, frame = self.frame_src.next_frame()
 
             if not ret:  # frame src closed/no more frames
                 break
 
             self.apply_pipeline(frame)
             self.f_count = self.f_count + 1
+            t1 = time.time()
+            fps = 1 / (t1 - t0)
+            print(f'[{Yellow}{self.f_count}{RESET}]', end=' ')
+            print(f'{Magenta}Done.{RESET} ({t1 - t0:.3f}s); {Magenta} FPS {RESET}{fps:.1f}')
+

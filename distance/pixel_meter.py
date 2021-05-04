@@ -1,6 +1,7 @@
 import math
+import string
 
-import cv2
+from lib.config import *
 
 mouse_pressed = False
 pixel_meter = -1
@@ -11,6 +12,7 @@ class DrawLineWidget(object):
         self.original_image = img
         self.clone = self.original_image.copy()
         cv2.namedWindow('Pixel-Meter')
+        cv2.setWindowProperty('Pixel-Meter', cv2.WND_PROP_TOPMOST, 2)  # set window always on top
         cv2.setMouseCallback('Pixel-Meter', self.extract_coordinates)
         self.dist = 0
         self.size_in_cm = size_in_cm
@@ -24,20 +26,23 @@ class DrawLineWidget(object):
         if event == cv2.EVENT_LBUTTONUP:
             mouse_pressed = False
             end = len(self.image_coordinates) - 1
-            print('Starting: {}, Ending: {}'.format(self.image_coordinates[0], self.image_coordinates[end]))
+            # print('Starting: {}, Ending: {}'.format(self.image_coordinates[0], self.image_coordinates[end]))
             x1 = self.image_coordinates[0][0]
             x2 = self.image_coordinates[end][0]
             y1 = self.image_coordinates[0][1]
             y2 = self.image_coordinates[end][1]
             dist = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
             self.dist = dist
-            print('Distance: ' + str(dist))
-            if self.pixel_as_cm == 0:
-                self.pixel_as_cm = float(self.size_in_cm) / float(self.dist)
-                print('one pixel as cm: {:0.3f}'.format(self.pixel_as_cm))
+            # print('Distance: ' + str(dist))
+            try:
+                if self.pixel_as_cm == 0:
+                    self.pixel_as_cm = float(self.size_in_cm) / float(self.dist)
+                # print('one pixel as cm: {:0.3f}'.format(self.pixel_as_cm))
+            except ZeroDivisionError:
+                self.pixel_as_cm = 100
 
             real_distance = dist * self.pixel_as_cm
-            print("Real distance: " + str(real_distance))
+            # print("Real distance: " + str(real_distance))
 
             # Draw line
             self.clone = self.original_image.copy()
@@ -45,7 +50,10 @@ class DrawLineWidget(object):
             cv2.imshow("Pixel-Meter", self.clone)
 
             pixels_in_meter = (dist / float(self.size_in_cm)) * 100
-            print("Pixels in one meter: " + str(pixels_in_meter))
+            print(RESET+40*'=')
+            print(f'\t\t{Magenta}{pixels_in_meter:.1f}{Bold} pixel/meter{RESET}')
+            print(40*'=')
+
             global pixel_meter
             pixel_meter = pixels_in_meter
 
@@ -75,7 +83,8 @@ class DrawLineWidget(object):
 def convert(frame):
     if pixel_meter != -1:
         return pixel_meter
-    size_in_cm = input("Enter the size of object you'll mark in cm: ")
+    print(Cyan+"SETUP\nEnter Object of Reference size in CM:"+Bold+White)
+    size_in_cm = input()
     img = frame.img
     height, width = img.shape[:2]
     max_height = 900
@@ -98,5 +107,4 @@ def convert(frame):
         if key == 27 or key == ord('q'):
             # cv2.destroyAllWindows()
             cv2.destroyWindow("Pixel-Meter")
-            print(pixel_meter)
             return pixel_meter

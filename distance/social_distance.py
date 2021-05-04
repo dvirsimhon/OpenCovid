@@ -1,13 +1,12 @@
 import itertools
 import math
 from random import randrange
-
 import cv2
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 import numpy as np
-
 from distance import pixel_meter
+plt.rcParams.update({'figure.max_open_warning': 0})
 
 
 class SocialDistance:
@@ -58,6 +57,8 @@ class SocialDistance:
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             frame.violations = 0
             frame.img = img
+            plt.cla()
+            plt.close(fig)
             return
 
         # Get width and height
@@ -65,8 +66,8 @@ class SocialDistance:
 
         # Pixel per meters
         # In this case, we are considering that 180px approximately is 1 meter
-        # average_px_meter = pixel_meter.convert(frame)
-        average_px_meter = 180
+        average_px_meter = pixel_meter.convert(frame)
+        # average_px_meter = 180
 
         # Calculate normalized coordinates for boxes
         centroids = []
@@ -155,6 +156,8 @@ class SocialDistance:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         frame.violations = violations
         frame.img = img
+        plt.cla()
+        plt.close(fig)
         return
 
 
@@ -177,7 +180,7 @@ if __name__ == '__main__':
 
 
     class Frame:
-        img = cv2.imread('ptt.jpg')
+        img = cv2.imread('../runs/ptt.jpg')
 
 
     frame = Frame()

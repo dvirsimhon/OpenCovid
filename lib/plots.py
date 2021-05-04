@@ -33,28 +33,30 @@ def display_analyze(frame):
     frame.mask_on_count = 0
     frame.mask_off_count = 0
 
-    # Draw Bbox on img
-    for info in frame.masks:
-        bbox, confidence, label = info
-        color = no_mask_color
-        if label == 0.0:
-            label = 'no mask'
-        elif label == 1.0:
-            label = 'mask'
-        if label == 'mask':
-            color = mask_color
-        if label == 'mask':
-            frame.mask_on_count += 1
-        else:
-            frame.mask_off_count += 1
-        if not hasattr(frame, 'violations'):
-            frame.violations = 0
-        label = "{} {}%".format(label, round(confidence * 100))
-        plot_one_box(bbox, frame.img, label=label, color=color, line_thickness=line_thickness)
+    if not hasattr(frame, 'violations'):
+        frame.violations = 0
+
+    if hasattr(frame, 'masks'):
+        # Draw Bbox on img
+        for info in frame.masks:
+            bbox, confidence, label = info
+            color = no_mask_color
+            if label == 0.0:
+                label = 'no mask'
+            elif label == 1.0:
+                label = 'mask'
+            if label == 'mask':
+                color = mask_color
+            if label == 'mask':
+                frame.mask_on_count += 1
+            else:
+                frame.mask_off_count += 1
+            label = "{} {}%".format(label, round(confidence * 100))
+            plot_one_box(bbox, frame.img, label=label, color=color, line_thickness=line_thickness)
 
     # Draw Mask Counter info
 
-    text = "no-masks: {} ; masks: {} ; distancing violations: {}".format(frame.mask_off_count,
+    text = "no-masks: {} ; masks: {} ; distance violations: {}".format(frame.mask_off_count,
                                                                          frame.mask_on_count, frame.violations)
     cv2.putText(frame.img, text, bottom_left_corner_of_text, cv2.FONT_ITALIC, round(font_scale / 2), stats_color, 2)
 
