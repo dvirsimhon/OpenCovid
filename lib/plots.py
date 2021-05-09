@@ -60,7 +60,7 @@ def display_analyze(frame):
 
     text = "no-masks: {} ; masks: {} ; distance violations: {}".format(frame.mask_off_count,
                                                                          frame.mask_on_count, frame.violations)
-    cv2.putText(frame.img, text, bottom_left_corner_of_text, cv2.FONT_ITALIC, round(font_scale / 2), stats_color, 2)
+    cv2.putText(frame.img, text, bottom_left_corner_of_text, cv2.FONT_ITALIC, font_scale, stats_color, 2)
 
     try:
         ratio = frame.mask_off_count / (frame.mask_on_count + frame.mask_off_count)
@@ -69,19 +69,14 @@ def display_analyze(frame):
 
     if ratio >= 0.51 and frame.mask_off_count >= 3:
         text = "Danger!"
-        cv2.putText(
-            frame.img, text, right_bottom_position, font, (font_scale * 0.5), danger_color,
-            int(2 * font_scale))
+        cv2.putText(frame.img, text, right_bottom_position, font, font_scale, danger_color, 2)
 
     elif ratio != 0:
         text = "Warning!"
-        cv2.putText(
-            frame.img, text, right_bottom_position, font, (font_scale * 0.5), warning_color,
-            int(2 * font_scale))
+        cv2.putText(frame.img, text, right_bottom_position, font, font_scale, warning_color, 2)
     else:
         text = "Safe"
-        cv2.putText(frame.img, text, right_bottom_position,
-                    font, (font_scale * 0.5), safe_color, int(2 * font_scale))
+        cv2.putText(frame.img, text, right_bottom_position, font, font_scale, safe_color, 2)
 
     # Display img
     cv2.imshow(globals.project, frame.img)

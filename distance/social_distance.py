@@ -6,14 +6,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 from lib.config import *
 import lib.config as globals
-
+from scipy.spatial import KDTree
 from distance import pixel_meter
 
 plt.rcParams.update({'figure.max_open_warning': 0})
 
 
 class SocialDistance:
-
     @staticmethod
     def calculate_coord(bbox, width, height):
         xmin = bbox[0] * width
@@ -50,9 +49,18 @@ class SocialDistance:
             return m
         return 0
 
+    @staticmethod
+    def closest_oor(mid, kdtree, lengths):
+        """ KDTree """
+        kdtree_q = kdtree.query(mid)  # 0-dist to self -> +1
+        return lengths[kdtree_q[1]]
+
     def detect(self, frame):
+        h, w, _ = frame.img.shape
+        w_x, w_y, w_w, w_h = cv2.getWindowImageRect(globals.project)
+
         if not frame.persons:
-            fig, ax = plt.subplots(figsize=(frame.img.shape[0], frame.img.shape[1]), dpi=dpi, frameon=False)
+            fig, ax = plt.subplots(figsize=(w/w_w*16, h/w_h*9), dpi=dpi, frameon=False)
             ax.imshow(cv2.cvtColor(frame.img, cv2.COLOR_BGR2RGB), interpolation='nearest')
             ax.annotate("No Persons Detected!", xy=(frame.img.shape[0]/2, frame.img.shape[1]/2), color='white', xytext=(frame.img.shape[0]/2, frame.img.shape[1]/2.5-10), fontsize=30,
                         bbox=dict(facecolor='#52c4ac', edgecolor='white', boxstyle='round', pad=0.2), zorder=30)
@@ -75,8 +83,11 @@ class SocialDistance:
 
         # Pixel per meters
         # In this case, we are considering that 180px approximately is 1 meter
-        average_px_meter = pixel_meter.convert(frame)
-        # average_px_meter = 84
+        px_meter_res = 84
+
+        # TODO multi pixel-meter references
+        # px_meter_res = pixel_meter.convert(frame)
+        # kdtree = KDTree(px_meter_res[0])
 
         # Calculate normalized coordinates for boxes
         centroids = []
@@ -89,12 +100,9 @@ class SocialDistance:
 
         # Calculate all permutations
         permutations = self.calculate_perm(centroids)
-        h, w, _ = frame.img.shape
         # Display boxes and centroids
 
-        w_x, w_y, w_w, w_h = cv2.getWindowImageRect(globals.project)
-
-        fig, ax = plt.subplots(figsize=(20, 15), dpi=100, frameon=False)
+        fig, ax = plt.subplots(figsize=(w/w_w*16, h/w_h*9), dpi=100, frameon=False)
 
         # plt.axis('off')
         ax.axis('off')
@@ -106,13 +114,20 @@ class SocialDistance:
                 (centr[0], centr[1]), 3, color='yellow', zorder=20))
 
         violations = 0
+        dists = []
         # Display lines between centroids
         for perm in permutations:
             dist = self.calculate_centr_distances(perm[0], perm[1])
-            dist_m = dist / average_px_meter
-
-            # print("M meters: ", dist_m)
             middle = self.midpoint(perm[0], perm[1])
+
+            # TODO multi pixel-meter references
+            # px_meter_val = self.closest_oor(middle, kdtree, px_meter_res[1])
+
+            px_meter_val = px_meter_res
+
+            dist_m = dist / px_meter_val
+            dists.append((perm, dist_m*1e2))
+            # print("M meters: ", dist_m)
             # print("Middle point", middle)
 
             x1 = perm[0][0]
@@ -166,7 +181,19 @@ class SocialDistance:
         img = np.array(fig.canvas.get_renderer()._renderer)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         frame.violations = violations
+        frame.dists = dists
         frame.img = img
         plt.cla()
         plt.close(fig)
         return
+
+
+if __name__ == '__main__':
+    # sd = SocialDistance()
+    lengths = np.array([80, 25, 105, 303])
+    data = np.array([[28.47, 83.43], [28.45, 80.42], [28.16, 79.36], [82.29, 20.39]])
+    mid = [27, 82]
+    N_NEIGHBORS = 1
+    kdtree = KDTree(data)
+    kdtree_q = kdtree.query(mid, N_NEIGHBORS)  # 0-dist to self -> +1
+    print(lengths[kdtree_q[1]])

@@ -2,6 +2,7 @@ import time
 from lib.config import *
 import lib.config as globals
 
+
 class Frame:
 
     def __init__(self, img):
