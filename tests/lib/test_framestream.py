@@ -1,10 +1,17 @@
 import unittest
+from OpenCovid.lib.opencovid import FrameStream
+from OpenCovid.lib.config import *
 
 class FrameStreamTestCase(unittest.TestCase):
     def setUp(self):
-        pass
+
+        self.fs = FrameStream()
+        self.fs_none = FrameStream(None)
+
 
     def test_next_frame(self):
+
+
         pass
 
     def tearDown(self):

@@ -96,13 +96,30 @@ class OpenCovidEvaluator(Evaluator):
 
     def set_current_img(self, img, file_name, img_unique_people):
         self.current_frame = self.oco.apply_pipeline_on_img(img)
-        # base on frame.persons BBOX and img_unique_people create dict from centroid -> BBox
+        self.mapping = self.current_frame.mapping
+
+    def is_c_in_box(self, c, box):
+        c_x,c_y = c
 
     def eval_pair(self, c1, c2):
         if self.current_frame is None:
             return None
 
         # check if both centroids are known in frame (else return None)
+        found_c1 = False
+        found_c2 = False
+        for bbox in self.current_frame.persons:
+            found_c1 = found_c1 if found_c1 else self.is_c_in_box(c1,bbox)
+            found_c2 = found_c2 if found_c2 else self.is_c_in_box(c1,bbox)
+            if found_c1 and found_c2:
+                break
+
+        if found_c1 and found_c2:
+
+
+            return 0.0
+        else:
+            return None
         # base on frame.persons BBOX and img_unique_people
 
         # return their estimated distance
