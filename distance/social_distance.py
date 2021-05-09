@@ -92,12 +92,13 @@ class SocialDistance:
         # Calculate normalized coordinates for boxes
         centroids = []
         coordinates = []
+        mapping = dict()
         for box, conf in frame.persons:
             coord = self.calculate_coord(box, width, height)
             centr = self.calculate_centr(coord)
             centroids.append(centr)
             coordinates.append(coord)
-
+            mapping[centr] = box
         # Calculate all permutations
         permutations = self.calculate_perm(centroids)
         # Display boxes and centroids
@@ -182,6 +183,7 @@ class SocialDistance:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         frame.violations = violations
         frame.dists = dists
+        frame.mapping = mapping
         frame.img = img
         plt.cla()
         plt.close(fig)
