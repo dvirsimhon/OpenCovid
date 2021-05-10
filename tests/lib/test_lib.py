@@ -7,7 +7,9 @@ def get_unit_test_suite():
     suite = unittest.TestSuite()
 
     suite.addTest(FrameStreamTestCase('test_next_frame'))
+
     suite.addTest(OpenCovidTestCase('test_add_analyze_filter'))
+    suite.addTest(OpenCovidTestCase('test_reset'))
 
     return suite
 
