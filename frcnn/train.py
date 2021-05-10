@@ -157,7 +157,7 @@ for epoch in np.arange(epochs):
 
     start_time = time.time()
     train_loss = []
-
+    correct = 0
     for images, targets, image_names in train_data_loader:
 
         # Loading images and targets
@@ -166,6 +166,8 @@ for epoch in np.arange(epochs):
 
         out = model(images, targets)
         losses = sum(loss for loss in out.values())
+        correct += (out == targets).float().sum()
+        accuracy = 100 * correct / len(train_dataset)
 
         optimizer.zero_grad()
 
@@ -179,6 +181,7 @@ for epoch in np.arange(epochs):
 
         if itr % 25 == 0:
             print(f"\n Iteration #{itr} loss: {out} \n")
+            print("Accuracy = {}".format(accuracy))
 
         itr += 1
 

@@ -13,4 +13,7 @@ def get_unit_test_suite():
 
 def get_integration_test_suite():
     suite = unittest.TestSuite()
+
+    suite.addTest(OpenCovidTestCase('test_set_frame_src'))
+
     return suite
