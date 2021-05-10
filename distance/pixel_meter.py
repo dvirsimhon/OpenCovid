@@ -1,8 +1,9 @@
 import math
 import numpy as np
 import cv2
-
+import lib.config as globals
 from lib.config import *
+
 
 mouse_pressed = False
 lengths = np.array([])
@@ -15,15 +16,26 @@ class DrawLineWidget(object):
         self.clone = self.original_image.copy()
         cv2.namedWindow('Pixel-Meter')
         cv2.setWindowProperty('Pixel-Meter', cv2.WND_PROP_TOPMOST, 2)  # set window always on top
+        w_x, w_y, w_w, w_h = cv2.getWindowImageRect(globals.project)
+        #font_scale = img.shape[1] / w_w
+        font_scale = 1
+        bottom_left_corner_of_text = (10, img.shape[0] - 10)
+        cv2.rectangle(img, (0, img.shape[0] - 50), (int(font_scale * 1e4), img.shape[0]), (0, 0, 0),
+                      cv2.FILLED)
+        cv2.putText(img, "Mark object and than specify length", bottom_left_corner_of_text, cv2.FONT_ITALIC, font_scale, stats_color, 2)
         cv2.setMouseCallback('Pixel-Meter', self.extract_coordinates)
         self.dist = 0
         self.pixel_as_cm = 0
         # List to store start/end points
         self.image_coordinates = []
 
+    def is_positive_numeric(self, str):
+        """ Returns True is string is a number. """
+        return str.replace('.', '', 1).isdigit() and float(str) > 0
+
     def extract_coordinates(self, event, x, y, flags, parameters):
         global mouse_pressed
-        # Record ending (x,y) coordintes on left mouse bottom release
+        # Record ending (x,y) coordinates on left mouse bottom release
         if event == cv2.EVENT_LBUTTONUP:
             mouse_pressed = False
             end = len(self.image_coordinates) - 1
@@ -35,8 +47,11 @@ class DrawLineWidget(object):
             dist = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
             self.dist = dist
             # print('Distance: ' + str(dist))
-            print(Cyan + "SETUP\nEnter Object of Reference size in CM:" + Bold + White)
+            print(Cyan + "SETUP\nEnter Object of Reference size in CM (greater than 0):" + Bold + White)
             size_in_cm = input()
+            while not self.is_positive_numeric(size_in_cm):
+                print(Cyan + "SETUP\nInvalid size was inserted. Please enter size in CM greater than 0:" + Bold + White)
+                size_in_cm = input()
             try:
                 if self.pixel_as_cm == 0:
                     self.pixel_as_cm = float(size_in_cm) / float(self.dist)
@@ -110,3 +125,7 @@ def convert(frame):
             cv2.destroyWindow("Pixel-Meter")
             data = np.array([*temp_data])
             return (lengths, data)
+
+
+
+
