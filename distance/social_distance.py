@@ -124,7 +124,7 @@ class SocialDistance:
             middle = self.midpoint(perm[0], perm[1])
 
             # TODO multi pixel-meter references
-            px_meter_val = self.closest_oor(middle, kdtree, px_meter_res[1])
+            px_meter_val = self.closest_oor(middle, kdtree, px_meter_res[0])
 
             # px_meter_val = px_meter_res
 
