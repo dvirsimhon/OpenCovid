@@ -14,7 +14,7 @@ plt.rcParams.update({'figure.max_open_warning': 0})
 
 class SocialDistance:
     @staticmethod
-    def calculate_coord(bbox, width, height):
+    def calculate_coord(bbox, width=1, height=1):
         xmin = bbox[0] * width
         ymin = bbox[1] * height
         xmax = bbox[2] * width
@@ -24,7 +24,7 @@ class SocialDistance:
 
     @staticmethod
     def calculate_centr(coord):
-        return (coord[0] + (coord[2] / 2), coord[1] + (coord[3] / 2))
+        return coord[0] + (coord[2] / 2), coord[1] + (coord[3] / 2)
 
     @staticmethod
     def calculate_centr_distances(centroid_1, centroid_2):
@@ -40,7 +40,7 @@ class SocialDistance:
 
     @staticmethod
     def midpoint(p1, p2):
-        return ((p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2)
+        return (p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2
 
     @staticmethod
     def calculate_slope(x1, y1, x2, y2):
@@ -62,7 +62,7 @@ class SocialDistance:
         if not frame.persons:
             fig, ax = plt.subplots(figsize=(w/w_w*16, h/w_h*9), dpi=dpi, frameon=False)
             ax.imshow(cv2.cvtColor(frame.img, cv2.COLOR_BGR2RGB), interpolation='nearest')
-            ax.annotate("No Persons Detected!", xy=(frame.img.shape[0]/2, frame.img.shape[1]/2), color='white', xytext=(frame.img.shape[0]/2, frame.img.shape[1]/2.5-10), fontsize=30,
+            ax.annotate("No Persons Detected!", xy=(frame.img.shape[0]/2, frame.img.shape[1]/2), color='white', xytext=(frame.img.shape[0]/2, frame.img.shape[1]/2.5-10), fontsize=15,
                         bbox=dict(facecolor='#52c4ac', edgecolor='white', boxstyle='round', pad=0.2), zorder=30)
             ax.axis('off')
             ax.margins(0, 0)
@@ -83,11 +83,7 @@ class SocialDistance:
         # Get width and height
         width, height = 1, 1
 
-        # Pixel per meters
-        # In this case, we are considering that 180px approximately is 1 meter
-        px_meter_res = 84
-
-        # TODO multi pixel-meter references
+        # Multi pixel-meter references
         px_meter_res = pixel_meter.convert(frame)
         kdtree = KDTree(px_meter_res[1])
 
@@ -123,15 +119,11 @@ class SocialDistance:
             dist = self.calculate_centr_distances(perm[0], perm[1])
             middle = self.midpoint(perm[0], perm[1])
 
-            # TODO multi pixel-meter references
-            px_meter_val = self.closest_oor(middle, kdtree, px_meter_res[1])
-
-            # px_meter_val = px_meter_res
+            # Multi pixel-meter references
+            px_meter_val = self.closest_oor(middle, kdtree, px_meter_res[0])
 
             dist_m = dist / px_meter_val
             dists.append((perm, dist_m*1e2))
-            # print("M meters: ", dist_m)
-            # print("Middle point", middle)
 
             x1 = perm[0][0]
             x2 = perm[1][0]
@@ -171,9 +163,6 @@ class SocialDistance:
         plt.tight_layout(pad=0)
         ax.imshow(cv2.cvtColor(frame.img, cv2.COLOR_BGR2RGB), interpolation='nearest')
 
-        # This allows you to show the inference
-        # plt.show()
-
         # This allows you to save each frame in a folder
         # fig.savefig("TEST.png", bbox_inches='tight', pad_inches=0)
 
@@ -190,18 +179,3 @@ class SocialDistance:
         plt.cla()
         plt.close(fig)
         return
-
-def main():
-    x = [(1,2),(3,4)]
-    array = np.array([*x])
-    print(array)
-    #data = np.array([(0,0)])
-    #data = np.vstack((data, (4, 5)))
-    #print(data)
-
-if __name__=='__main__':
-    main()
-
-
-
-

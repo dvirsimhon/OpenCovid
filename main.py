@@ -24,7 +24,6 @@ if __name__ == '__main__':
     parser.add_argument('--project', default='OpenCoVid', help='main window and project name')
 
     opt = parser.parse_args()
-    print(opt)
     webcam = opt.source.isnumeric() or opt.source.endswith('.txt') or opt.source.lower().startswith(
             ('rtsp://', 'https://'))
     config.initialize(opt.person_pt, opt.mask_pt, opt.project, opt.rate, [opt.source, 0][webcam], opt.show_inf)

@@ -1,11 +1,16 @@
-import sys, os, unittest,logging
+import logging
+import unittest
+
 import numpy as np
 from scipy.spatial import KDTree
+
 from distance.social_distance import SocialDistance
+from lib import config
 
-class test_distance(unittest.TestCase):
 
-    def setUp(self, log_file='/test_distance.log'):
+class TestDistance(unittest.TestCase):
+
+    def setUp(self, log_file='test_distance.log'):
         logging.basicConfig(filename=log_file, level=logging.DEBUG)
         self.obj = SocialDistance()
 
@@ -15,16 +20,21 @@ class test_distance(unittest.TestCase):
         mid = [27, 82]
         kdtree = KDTree(data)
         self.assertEqual(80, self.obj.closest_oor(mid, kdtree, lengths))
+        self.assertEqual(0, self.obj.closest_oor(mid, kdtree, [0, 1, 2, 3]))
+        with self.assertRaises(Exception) as _:
+            self.obj.closest_oor([], kdtree, [])
 
     def test_calculate_centr_distances(self):
         centroid_1 = (1838.5, 2105.0)
         centroid_2 = (1700.5, 1105.0)
         self.assertAlmostEqual(1009, self.obj.calculate_centr_distances(centroid_1, centroid_2), delta=1)
+        self.assertAlmostEqual(0, self.obj.calculate_centr_distances((0, 0), (0, 0)), delta=1)
 
     def test_midpoint(self):
         p1 = (1838.5, 2105.0)
         p2 = (1700.5, 1105.0)
         self.assertEqual((1769.5, 1605.0), self.obj.midpoint(p1, p2))
+        self.assertAlmostEqual((0.0, 0.0), self.obj.midpoint((0, 0), (0, 0)), delta=1)
 
     def test_calculate_perm(self):
         centroids = [
@@ -34,27 +44,32 @@ class test_distance(unittest.TestCase):
             (3838.5, 105.0),
         ]
         expected = [((1838.5, 2105.0), (838.5, 3105.0)),
-                     ((1838.5, 2105.0), (2838.5, 2105.0)),
-                     ((1838.5, 2105.0), (3838.5, 105.0)),
-                     ((838.5, 3105.0), (2838.5, 2105.0)),
-                     ((838.5, 3105.0), (3838.5, 105.0)),
-                     ((2838.5, 2105.0), (3838.5, 105.0))]
+                    ((1838.5, 2105.0), (2838.5, 2105.0)),
+                    ((1838.5, 2105.0), (3838.5, 105.0)),
+                    ((838.5, 3105.0), (2838.5, 2105.0)),
+                    ((838.5, 3105.0), (3838.5, 105.0)),
+                    ((2838.5, 2105.0), (3838.5, 105.0))
+                    ]
         self.assertEqual(expected, self.obj.calculate_perm(centroids))
         self.assertEqual(6, len(self.obj.calculate_perm(centroids)))
+        self.assertEqual(0, len(self.obj.calculate_perm([])))
 
     def test_calculate_slope(self):
         axis = (1838.5, 2105.0, 1700.5, 1105.0)
         self.assertAlmostEqual(7, self.obj.calculate_slope(*axis), delta=1)
         axis = (1838.5, 2105.0, 1838.5, 1105.0)
         self.assertEqual(0, self.obj.calculate_slope(*axis))
+        self.assertAlmostEqual(0, self.obj.calculate_slope(0, 0, 0, 0), delta=1)
 
     def test_calculate_centr(self):
         coord = 1751, 1883, 175, 444
         self.assertEqual((1838.5, 2105.0), self.obj.calculate_centr(coord))
+        self.assertEqual((0, 0), self.obj.calculate_centr((0, 0, 0, 0)))
 
     def test_calculate_coord(self):
         bbox = 1751, 1883, 1926, 2327
         self.assertEqual([1751, 1883, 175, 444], self.obj.calculate_coord(bbox, 1, 1))
+        self.assertEqual([0, 0, 0, 0], self.obj.calculate_coord(bbox, 0, 0))
 
     def test_detect(self):
         import cv2
@@ -75,16 +90,15 @@ class test_distance(unittest.TestCase):
                    ((166.0, 2397.0, 393.0, 2894.0), 0.8230567574501038),
                    ((348.0, 2274.0, 605.0, 2823.0), 0.8839704394340515)]
 
-        class Frame: img = cv2.imread('ptt.jpg')
-
+        class Frame: img = cv2.imread('test.jpg')
         frame = Frame()
         frame.persons = persons
-        self.assertEqual([1751, 1883, 175, 444], self.obj.detect(frame))
+        config.initialize()
 
 
 def get_unit_test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(test_distance))
+    suite.addTest(unittest.makeSuite(TestDistance))
     return suite
 
 
@@ -93,8 +107,5 @@ def get_integration_test_suite():
 
 
 if __name__ == '__main__':
-    suite = unittest.TestLoader().loadTestsFromTestCase(test_distance)
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestDistance)
     unittest.TextTestRunner(verbosity=2).run(suite)
-
-
-

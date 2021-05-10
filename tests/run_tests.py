@@ -1,9 +1,10 @@
-import coverage
 import unittest
 
+import coverage
+from OpenCovid.tests.distance import test_distance
 from OpenCovid.tests.lib import test_lib
 from OpenCovid.tests.yolomask import test_yolomask
-from OpenCovid.tests.distance import test_distance
+
 
 def run_unit_tests(runner):
     runner.run(test_lib.get_unit_test_suite())

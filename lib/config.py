@@ -3,7 +3,7 @@ import sys
 
 
 def initialize(persons_pt_opt='yolomask/weights/yolov5s.pt', masks_pt_opt='yolomask/weights/yolomask.pt',
-             project_opt='OpenCoVid', rate_opt=1, source_opt=0, show_inf_opt=1):
+             project_opt='OpenCoVid', rate_opt=1, source_opt=0, show_inf_opt=0):
 
     global persons_pt, masks_pt, project, rate, source, show_inf
     # == Model Parameters =================================================
