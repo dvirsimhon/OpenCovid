@@ -5,9 +5,9 @@ import cv2
 from lib.config import *
 
 mouse_pressed = False
-pixel_meter = -1
 lengths = np.array([])
-data = np.array([])
+# data = np.array([])
+temp_data = []
 
 class DrawLineWidget(object):
     def __init__(self, img):
@@ -52,10 +52,10 @@ class DrawLineWidget(object):
             pixels_in_meter = (dist / float(size_in_cm)) * 100
 
             global lengths
-            global data
+            global temp_data
 
             lengths = np.append(lengths, pixels_in_meter)
-            data = np.append(data, [x1, y1])
+            temp_data.append((x1, y1))
             print(RESET+40*'=')
             print(f'\t\t{Magenta}{pixels_in_meter:.1f}{Bold} pixel/meter{RESET}')
             print(40*'=')
@@ -85,6 +85,10 @@ class DrawLineWidget(object):
 
 def convert(frame):
 
+    if temp_data:
+        data = np.array([*temp_data])
+        return (lengths, data)
+
     img = frame.img
     height, width = img.shape[:2]
     max_height = 900
@@ -104,4 +108,5 @@ def convert(frame):
         # Close program with keyboard 'q'
         if key == 27 or key == ord('q'):
             cv2.destroyWindow("Pixel-Meter")
-            return lengths, data
+            data = np.array([*temp_data])
+            return (lengths, data)

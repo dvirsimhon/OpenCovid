@@ -88,8 +88,8 @@ class SocialDistance:
         px_meter_res = 84
 
         # TODO multi pixel-meter references
-        # px_meter_res = pixel_meter.convert(frame)
-        # kdtree = KDTree(px_meter_res[0])
+        px_meter_res = pixel_meter.convert(frame)
+        kdtree = KDTree(px_meter_res[1])
 
         # Calculate normalized coordinates for boxes
         centroids = []
@@ -124,9 +124,9 @@ class SocialDistance:
             middle = self.midpoint(perm[0], perm[1])
 
             # TODO multi pixel-meter references
-            # px_meter_val = self.closest_oor(middle, kdtree, px_meter_res[1])
+            px_meter_val = self.closest_oor(middle, kdtree, px_meter_res[1])
 
-            px_meter_val = px_meter_res
+            # px_meter_val = px_meter_res
 
             dist_m = dist / px_meter_val
             dists.append((perm, dist_m*1e2))
@@ -190,6 +190,18 @@ class SocialDistance:
         plt.cla()
         plt.close(fig)
         return
+
+def main():
+    x = [(1,2),(3,4)]
+    array = np.array([*x])
+    print(array)
+    #data = np.array([(0,0)])
+    #data = np.vstack((data, (4, 5)))
+    #print(data)
+
+if __name__=='__main__':
+    main()
+
 
 
 
