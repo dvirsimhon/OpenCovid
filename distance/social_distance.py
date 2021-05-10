@@ -73,6 +73,8 @@ class SocialDistance:
             img = np.array(fig.canvas.get_renderer()._renderer)
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             frame.violations = 0
+            frame.dists = []
+            frame.mapping = []
             frame.img = img
             plt.cla()
             plt.close(fig)
@@ -98,7 +100,7 @@ class SocialDistance:
             centr = self.calculate_centr(coord)
             centroids.append(centr)
             coordinates.append(coord)
-            mapping[centr] = box
+            mapping[box] = centr
         # Calculate all permutations
         permutations = self.calculate_perm(centroids)
         # Display boxes and centroids
@@ -190,12 +192,4 @@ class SocialDistance:
         return
 
 
-if __name__ == '__main__':
-    # sd = SocialDistance()
-    lengths = np.array([80, 25, 105, 303])
-    data = np.array([[28.47, 83.43], [28.45, 80.42], [28.16, 79.36], [82.29, 20.39]])
-    mid = [27, 82]
-    N_NEIGHBORS = 1
-    kdtree = KDTree(data)
-    kdtree_q = kdtree.query(mid, N_NEIGHBORS)  # 0-dist to self -> +1
-    print(lengths[kdtree_q[1]])
+
