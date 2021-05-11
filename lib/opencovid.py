@@ -186,6 +186,7 @@ class OpenCoVid:
 
             if first_frame and self.pixel_meter_converter is not None:
                 self.pixel_meter_converter.update_px_meter(frame)
+                first_frame = False
 
             self.apply_pipeline(frame)
             self.f_count = self.f_count + 1
