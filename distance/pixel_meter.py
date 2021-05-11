@@ -7,13 +7,13 @@ from lib.config import *
 
 mouse_pressed = False
 lengths = np.array([])
-# data = np.array([])
 temp_data = []
 
 class DrawLineWidget(object):
-    def __init__(self, img):
+    def __init__(self, img, scaling_factor):
         self.original_image = img
         self.clone = self.original_image.copy()
+        self.scaling_factor = scaling_factor
         cv2.namedWindow('Pixel-Meter')
         cv2.setWindowProperty('Pixel-Meter', cv2.WND_PROP_TOPMOST, 2)  # set window always on top
         w_x, w_y, w_w, w_h = cv2.getWindowImageRect(globals.project)
@@ -64,7 +64,7 @@ class DrawLineWidget(object):
             cv2.line(self.clone, self.image_coordinates[0], self.image_coordinates[end], (107, 209, 67), 2, cv2.LINE_AA)
             cv2.imshow("Pixel-Meter", self.clone)
 
-            pixels_in_meter = (dist / float(size_in_cm)) * 100
+            pixels_in_meter = (dist / float(size_in_cm)) * 100 / self.scaling_factor
 
             global lengths
             global temp_data
@@ -99,15 +99,15 @@ class DrawLineWidget(object):
 
 
 def convert(frame):
-
-    if temp_data:
-        data = np.array([*temp_data])
-        return (lengths, data)
+    # if temp_data:
+    #     data = np.array([*temp_data])
+    #     return lengths, data
 
     img = frame.img
     height, width = img.shape[:2]
     max_height = 900
     max_width = 900
+    scaling_factor = 1
     # only shrink if img is bigger than required
     if max_height < height or max_width < width:
         # get scaling factor
@@ -116,7 +116,7 @@ def convert(frame):
             scaling_factor = max_width / float(width)
         # resize image
         img = cv2.resize(img, None, fx=scaling_factor, fy=scaling_factor, interpolation=cv2.INTER_AREA)
-    draw_line_widget = DrawLineWidget(img)
+    draw_line_widget = DrawLineWidget(img, scaling_factor)
     while True:
         cv2.imshow('Pixel-Meter', draw_line_widget.show_image())
         key = cv2.waitKey(10)
@@ -124,8 +124,4 @@ def convert(frame):
         if key == 27 or key == ord('q'):
             cv2.destroyWindow("Pixel-Meter")
             data = np.array([*temp_data])
-            return (lengths, data)
-
-
-
-
+            return lengths, data

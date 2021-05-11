@@ -13,6 +13,7 @@ plt.rcParams.update({'figure.max_open_warning': 0})
 
 
 class SocialDistance:
+
     @staticmethod
     def calculate_coord(bbox, width=1, height=1):
         xmin = bbox[0] * width
@@ -55,15 +56,24 @@ class SocialDistance:
         kdtree_q = kdtree.query(mid)  # 0-dist to self -> +1
         return lengths[kdtree_q[1]]
 
+    def update_px_meter(self, frame):
+        self.px_meter_res = pixel_meter.convert(frame)
+
     def detect(self, frame):
         h, w, _ = frame.img.shape
         w_x, w_y, w_w, w_h = cv2.getWindowImageRect(globals.project)
 
         if not frame.persons:
-            fig, ax = plt.subplots(figsize=(w/w_w*16, h/w_h*9), dpi=dpi, frameon=False)
+            try:
+                fig, ax = plt.subplots(figsize=(w / w_w * 16, h / w_h * 9), dpi=100, frameon=False)
+            except:
+                fig, ax = plt.subplots(figsize=(40, 30), dpi=100, frameon=False)
+
             ax.imshow(cv2.cvtColor(frame.img, cv2.COLOR_BGR2RGB), interpolation='nearest')
-            ax.annotate("No Persons Detected!", xy=(frame.img.shape[0]/2, frame.img.shape[1]/2), color='white', xytext=(frame.img.shape[0]/2, frame.img.shape[1]/2.5-10), fontsize=15,
+            ax.annotate("No Persons Detected!", xy=(frame.img.shape[0] / 2, frame.img.shape[1] / 2), color='white',
+                        xytext=(frame.img.shape[0] / 2, frame.img.shape[1] / 2.5 - 10), fontsize=15,
                         bbox=dict(facecolor='#52c4ac', edgecolor='white', boxstyle='round', pad=0.2), zorder=30)
+
             ax.axis('off')
             ax.margins(0, 0)
             plt.tight_layout(pad=0)
@@ -84,7 +94,7 @@ class SocialDistance:
         width, height = 1, 1
 
         # Multi pixel-meter references
-        px_meter_res = pixel_meter.convert(frame)
+        px_meter_res = self.px_meter_res
         kdtree = KDTree(px_meter_res[1])
 
         # Calculate normalized coordinates for boxes
@@ -101,9 +111,11 @@ class SocialDistance:
         permutations = self.calculate_perm(centroids)
         # Display boxes and centroids
 
-        fig, ax = plt.subplots(figsize=(w/w_w*16, h/w_h*9), dpi=100, frameon=False)
+        try:
+            fig, ax = plt.subplots(figsize=(w / w_w * 16, h / w_h * 9), dpi=100, frameon=False)
+        except:
+            fig, ax = plt.subplots(figsize=(40, 30), dpi=100, frameon=False)
 
-        # plt.axis('off')
         ax.axis('off')
         ax.margins(0, 0)
         for coord, centr in zip(coordinates, centroids):
@@ -122,8 +134,10 @@ class SocialDistance:
             # Multi pixel-meter references
             px_meter_val = self.closest_oor(middle, kdtree, px_meter_res[0])
 
+            # px_meter_val = 220
+
             dist_m = dist / px_meter_val
-            dists.append((perm, dist_m*1e2))
+            dists.append((perm, dist_m * 1e2))
 
             x1 = perm[0][0]
             x2 = perm[1][0]
@@ -164,7 +178,7 @@ class SocialDistance:
         ax.imshow(cv2.cvtColor(frame.img, cv2.COLOR_BGR2RGB), interpolation='nearest')
 
         # This allows you to save each frame in a folder
-        # fig.savefig("TEST.png", bbox_inches='tight', pad_inches=0)
+        fig.savefig("TEST.png", bbox_inches='tight', pad_inches=0)
 
         # Convert figure to numpy
         fig.canvas.draw()
@@ -176,6 +190,9 @@ class SocialDistance:
         frame.dists = dists
         frame.mapping = mapping
         frame.img = img
+
+        print('**violations**')
+        print(frame.violations)
         plt.cla()
         plt.close(fig)
         return

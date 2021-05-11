@@ -35,8 +35,7 @@ def display_analyze(frame):
     frame.mask_on_count = 0
     frame.mask_off_count = 0
 
-    if not hasattr(frame, 'violations'):
-        frame.violations = 0
+    if not hasattr(frame, 'violations'): frame.violations = 0
 
     if hasattr(frame, 'masks'):
         # Draw Bbox on img

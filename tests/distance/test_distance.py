@@ -94,6 +94,13 @@ class TestDistance(unittest.TestCase):
         frame = Frame()
         frame.persons = persons
         config.initialize()
+        self.obj.start(frame=frame)
+        self.obj.detect(frame=frame)
+        self.assertEqual(105, len(frame.dists))
+        self.assertEqual(11, len(frame.violations))
+        frame.persons = []
+        self.obj.detect(frame=frame)
+        self.assertEqual(0, len(frame.dists))
 
 
 def get_unit_test_suite():
