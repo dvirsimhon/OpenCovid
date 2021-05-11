@@ -2,10 +2,6 @@ import time
 from lib.config import *
 import lib.config as globals
 
-from yolomask.mask_inference import YoloMask
-from yolomask.person_inference import YoloPerson
-from distance.social_distance import SocialDistance
-
 
 class Frame:
 
@@ -106,13 +102,15 @@ class OpenCoVid:
 
         # Populate Pipeline with basic filters
         if self.init_filters is not None:
-            if "person" in self.init_filters and self.init_filters["person"]:
-                self.add_analyze_filter(YoloPerson())
-            if "dists" in self.init_filters and self.init_filters["dists"]:
-                self.pixel_meter_converter = SocialDistance()
-                self.add_analyze_filter(self.pixel_meter_converter)
-            if "masks" in self.init_filters and self.init_filters["masks"]:
-                self.add_analyze_filter(YoloMask())
+            if "person" in self.init_filters:
+                self.add_analyze_filter(self.init_filters["person"])
+            if "dists" in self.init_filters:
+                detect_op = getattr(self.init_filters["dists"], "update_px_meter", None)
+                if callable(detect_op):
+                    self.pixel_meter_converter = self.init_filters["dists"]
+                self.add_analyze_filter(self.init_filters["dists"])
+            if "masks" in self.init_filters:
+                self.add_analyze_filter(self.init_filters["masks"])
 
         # self.add_analyze_filter(inference.YoloMask())
         # self.add_analyze_filter(face_mask_estimator_faster_rcnn())

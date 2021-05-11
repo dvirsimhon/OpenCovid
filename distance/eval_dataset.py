@@ -5,6 +5,17 @@ import cv2
 
 import matplotlib.pyplot as plt
 sys.path.insert(0, '..')
+from lib.config import initialize
+sys.path.insert(0, '../../yolomask/')
+
+
+# sys.path.insert(0, 'yolomask/')
+from yolomask.mask_inference import YoloMask
+from yolomask.person_inference import YoloPerson
+from distance.social_distance import SocialDistance
+
+initialize()
+
 from OpenCovid.lib.opencovid import OpenCoVid
 
 main_dataset_folder_path = "D:\\University\\FourthYear\\Final Project\\Program\\DetectPersons\\detect_people\\dataset"
@@ -424,7 +435,7 @@ def eval_results(y_pred_by_eval,y_true_list,error_legal_margin=0.0):
     # ==========================================================================================
 
 
-def t_estimators(data,evaluators=[IdealEvaluator(),EuclidEvaluator(),EuclidNoiseEvaluator()], margins=[0.0,30.0,50.0,150.0,400.0],verbose=False):
+def t_estimators(data,evaluators=[IdealEvaluator(),EuclidEvaluator(),OpenCovidEvaluator(OpenCoVid(None),"OpenCovid - 1 origin")], margins=[0.0,30.0,50.0,150.0,400.0],verbose=False):
 
     # Eval
     y_pred_by_eval = {}
@@ -456,8 +467,14 @@ def t_estimators(data,evaluators=[IdealEvaluator(),EuclidEvaluator(),EuclidNoise
         eval_results(y_pred_by_eval,y_true_list,margin)
 
 data = load_dataset(main_dataset_folder_path)
+init_filters = {}
 
-t_estimators(data)
+init_filters["person"] = YoloPerson()
+init_filters["dists"] = SocialDistance()
+init_filters["masks"] = YoloMask()
+
+evaluators=[IdealEvaluator(),EuclidEvaluator(),OpenCovidEvaluator(OpenCoVid(None,init_filters=init_filters),"OpenCovid - 1 origin")]
+t_estimators(data,evaluators=evaluators)
 print()
 print("=" * 50)
 print()

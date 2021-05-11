@@ -31,9 +31,12 @@ if __name__ == '__main__':
     # === OpenCoVid Lib Use =========================
     init_filters = {}
     # filters
-    init_filters["person"] = opt.persons
-    init_filters["dists"] = opt.dists
-    init_filters["masks"] = opt.masks
+    if opt.persons:
+        init_filters["person"] = YoloPerson()
+    if opt.dists:
+        init_filters["dists"] = SocialDistance()
+    if opt.masks:
+        init_filters["masks"] = YoloMask()
 
     ocv = OpenCoVid(callback=display_analyze, video_src=config.source,init_filters=init_filters)
 
