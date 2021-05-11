@@ -13,14 +13,13 @@ class TestYolo(unittest.TestCase):
     def setUp(self, log_file='test_distance.log'):
         lib.config.initialize()
 
-        pass
-
     def test_yoloperson(self):
         with self.assertRaises(FileNotFoundError) as _:
             self.assertRaises(FileNotFoundError, YoloPerson(weights='notfound'))
 
         # init weights
         yoloperson = YoloPerson(weights='../../yolomask/weights/yolov5s.pt')
+        self.assertIsNotNone(yoloperson)
 
         self.assertEqual(yoloperson.classes, [0])
 
@@ -38,6 +37,7 @@ class TestYolo(unittest.TestCase):
 
         # init weights
         yolomask = YoloMask(weights='../../yolomask/weights/yolomask.pt')
+        self.assertIsNotNone(yolomask)
 
         self.assertEqual(yolomask.classes, [0, 1])
 

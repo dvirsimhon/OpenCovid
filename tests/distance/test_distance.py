@@ -1,6 +1,6 @@
 import logging
 import unittest
-
+import cv2
 import numpy as np
 from scipy.spatial import KDTree
 
@@ -12,6 +12,7 @@ class TestDistance(unittest.TestCase):
 
     def setUp(self, log_file='test_distance.log'):
         logging.basicConfig(filename=log_file, level=logging.DEBUG)
+        config.initialize()
         self.obj = SocialDistance()
 
     def test_closest_oor(self):
@@ -71,9 +72,21 @@ class TestDistance(unittest.TestCase):
         self.assertEqual([1751, 1883, 175, 444], self.obj.calculate_coord(bbox, 1, 1))
         self.assertEqual([0, 0, 0, 0], self.obj.calculate_coord(bbox, 0, 0))
 
-    def test_detect(self):
-        import cv2
+    def test_update_px_meter(self):
+        class Frame: img = cv2.imread('test.jpg')
+        frame = Frame()
+        old_val = self.obj.px_meter_res
+        self.obj.update_px_meter(frame=frame)
+        self.assertEqual(100, old_val)
+        self.assertNotEqual(old_val, self.obj.px_meter_res)
+        with self.assertRaises(StopIteration) as _:
+            self.obj.update_px_meter(frame=None)
 
+        old_val = self.obj.px_meter_res
+        self.obj.update_px_meter(frame=frame)
+        self.assertNotEqual(old_val, self.obj.px_meter_res)
+
+    def test_detect(self):
         persons = [((2714.0, 2232.0, 3009.0, 2595.0), 0.45305538177490234),
                    ((468.0, 1884.0, 667.0, 2145.0), 0.48174849152565),
                    ((2808.0, 1566.0, 2954.0, 1954.0), 0.5031518936157227),
@@ -93,14 +106,16 @@ class TestDistance(unittest.TestCase):
         class Frame: img = cv2.imread('test.jpg')
         frame = Frame()
         frame.persons = persons
-        config.initialize()
-        self.obj.start(frame=frame)
+        self.obj.update_px_meter(frame=frame)
         self.obj.detect(frame=frame)
         self.assertEqual(105, len(frame.dists))
         self.assertEqual(11, len(frame.violations))
         frame.persons = []
         self.obj.detect(frame=frame)
         self.assertEqual(0, len(frame.dists))
+        self.assertEqual(0, len(frame.violations))
+        with self.assertRaises(StopIteration) as _:
+            self.obj.detect(frame=None)
 
 
 def get_unit_test_suite():

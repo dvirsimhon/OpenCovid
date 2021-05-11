@@ -18,11 +18,12 @@ class DrawLineWidget(object):
         cv2.setWindowProperty('Pixel-Meter', cv2.WND_PROP_TOPMOST, 2)  # set window always on top
         w_x, w_y, w_w, w_h = cv2.getWindowImageRect(globals.project)
         #font_scale = img.shape[1] / w_w
-        font_scale = 1
         bottom_left_corner_of_text = (10, img.shape[0] - 10)
-        cv2.rectangle(img, (0, img.shape[0] - 50), (int(font_scale * 1e4), img.shape[0]), (0, 0, 0),
+        cv2.rectangle(img, (0, img.shape[0] - 30), (int(1 * 1e4), img.shape[0]), (0, 0, 0),
                       cv2.FILLED)
-        cv2.putText(img, "Mark object and than specify length", bottom_left_corner_of_text, cv2.FONT_ITALIC, font_scale, stats_color, 2)
+        cv2.addWeighted(img, alpha, self.clone, 1 - alpha, gamma=0)
+        cv2.putText(img, "Mark Object Of Reference and then specify length!", bottom_left_corner_of_text, cv2.FONT_ITALIC, 1/2, stats_color, 1)
+
         cv2.setMouseCallback('Pixel-Meter', self.extract_coordinates)
         self.dist = 0
         self.pixel_as_cm = 0

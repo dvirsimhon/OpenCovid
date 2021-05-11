@@ -14,6 +14,9 @@ plt.rcParams.update({'figure.max_open_warning': 0})
 
 class SocialDistance:
 
+    def __init__(self):
+        self.px_meter_res = 100
+
     @staticmethod
     def calculate_coord(bbox, width=1, height=1):
         xmin = bbox[0] * width
@@ -57,9 +60,13 @@ class SocialDistance:
         return lengths[kdtree_q[1]]
 
     def update_px_meter(self, frame):
+        if not hasattr(frame, 'img'):
+            raise StopIteration('Frame has no img attribute')
         self.px_meter_res = pixel_meter.convert(frame)
 
     def detect(self, frame):
+        if not hasattr(frame, 'img'):
+            raise StopIteration('Frame has no img attribute')
         h, w, _ = frame.img.shape
         w_x, w_y, w_w, w_h = cv2.getWindowImageRect(globals.project)
 
@@ -190,9 +197,6 @@ class SocialDistance:
         frame.dists = dists
         frame.mapping = mapping
         frame.img = img
-
-        print('**violations**')
-        print(frame.violations)
         plt.cla()
         plt.close(fig)
         return
