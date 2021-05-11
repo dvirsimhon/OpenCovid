@@ -29,14 +29,14 @@ if __name__ == '__main__':
     config.initialize(opt.person_pt, opt.mask_pt, opt.project, opt.rate, [opt.source, 0][webcam], opt.show_inf)
 
     # === OpenCoVid Lib Use =========================
-    ocv = OpenCoVid(callback=display_analyze, video_src=config.source)
+    init_filters = {}
     # filters
-    if opt.persons:
-        ocv.add_analyze_filter(YoloPerson())
-    if opt.dists:
-        ocv.add_analyze_filter(SocialDistance())
-    if opt.masks:
-        ocv.add_analyze_filter(YoloMask())
+    init_filters["person"] = opt.persons
+    init_filters["dists"] = opt.dists
+    init_filters["masks"] = opt.masks
+
+    ocv = OpenCoVid(callback=display_analyze, video_src=config.source,init_filters=init_filters)
+
     # run
     ocv.analyze()
     # ===============================================

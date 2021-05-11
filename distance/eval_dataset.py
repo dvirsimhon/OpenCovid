@@ -1,9 +1,11 @@
 import os
 import numpy as np
-import csv
+import csv, sys
 import cv2
 
 import matplotlib.pyplot as plt
+sys.path.insert(0, '..')
+from OpenCovid.lib.opencovid import OpenCoVid
 
 main_dataset_folder_path = "D:\\University\\FourthYear\\Final Project\\Program\\DetectPersons\\detect_people\\dataset"
 
@@ -284,7 +286,7 @@ def eval_results(y_pred_by_eval,y_true_list,error_legal_margin=0.0):
     print("-" * 20)
     print("MSE Comparison:")
     for evaluator in result.keys():
-        print("{} = {}".format(evaluator.get_name(), np.round(result[evaluator]["MSE"],3)))
+        print("{} = {}".format(evaluator.get_name(), np.round(result[evaluator]["MSE"].sum(),3)))
     print("-" * 20)
     print("=" * 60)
     print()

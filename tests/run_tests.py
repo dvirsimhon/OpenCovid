@@ -1,19 +1,20 @@
-import unittest
-
 import coverage
-from OpenCovid.tests.distance import test_distance
-from OpenCovid.tests.lib import test_lib
-from OpenCovid.tests.yolomask import test_yolomask
+import unittest
+import sys
 
+sys.path.insert(0, '..')
+from OpenCovid.tests.lib import test_lib
+from OpenCovid.tests.yolomask import test_yolo
+from OpenCovid.tests.distance import test_distance
 
 def run_unit_tests(runner):
     runner.run(test_lib.get_unit_test_suite())
-    runner.run(test_yolomask.get_unit_test_suite())
+    runner.run(test_yolo.get_unit_test_suite())
     runner.run(test_distance.get_unit_test_suite())
 
 def run_integration_tests(runner):
     runner.run(test_lib.get_integration_test_suite())
-    runner.run(test_yolomask.get_integration_test_suite())
+    runner.run(test_yolo.get_integration_test_suite())
     runner.run(test_distance.get_integration_test_suite())
 
 # ======================================================================================

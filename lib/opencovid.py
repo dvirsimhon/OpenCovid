@@ -2,6 +2,10 @@ import time
 from lib.config import *
 import lib.config as globals
 
+from yolomask.mask_inference import YoloMask
+from yolomask.person_inference import YoloPerson
+from distance.social_distance import SocialDistance
+
 
 class Frame:
 
@@ -69,7 +73,7 @@ class FrameStream:
 
 
 class OpenCoVid:
-    def __init__(self, callback, video_src=0, fps_limit=60):
+    def __init__(self, callback, video_src=0, init_filters=None, fps_limit=60):
         """ Constructor to the OpenCoVid Analyze pipeline object
 
         Parameters:
@@ -89,6 +93,8 @@ class OpenCoVid:
         self.pipeline_filters = []
         self.frame_src = FrameStream(video_src)
         self.analyzing = None
+        self.init_filters = init_filters
+        self.pixel_meter_converter = None
         self.reset()
 
     def reset(self):
@@ -99,6 +105,15 @@ class OpenCoVid:
         self.pipeline_filters = []
 
         # Populate Pipeline with basic filters
+        if self.init_filters is not None:
+            if "person" in self.init_filters and self.init_filters["person"]:
+                self.add_analyze_filter(YoloPerson())
+            if "dists" in self.init_filters and self.init_filters["dists"]:
+                self.pixel_meter_converter = SocialDistance()
+                self.add_analyze_filter(self.pixel_meter_converter)
+            if "masks" in self.init_filters and self.init_filters["masks"]:
+                self.add_analyze_filter(YoloMask())
+
         # self.add_analyze_filter(inference.YoloMask())
         # self.add_analyze_filter(face_mask_estimator_faster_rcnn())
 
@@ -141,11 +156,24 @@ class OpenCoVid:
             self.callback(frame)
         return frame
 
+    def apply_pipeline_on_img(self, img):
+        if self.analyzing:
+            return
+
+        frame = Frame(img)
+        if self.pixel_meter_converter is not None:
+            self.pixel_meter_converter.update_px_meter(frame)
+
+        return self.apply_pipeline(frame)
+
     def analyze(self):
         """ Start analyzing the frame stream frame by frame until stream is over or stop/reset method is called """
 
         self.analyzing = True
         print(analyzing_ascii)
+
+        first_frame = True
+
         while self.analyzing:
             # self.frame_src.setStreamInfo(cv2.CAP_PROP_POS_MSEC,(self.f_count * 100))  # not extract every frame,
             # limit that one frame every second
@@ -155,6 +183,9 @@ class OpenCoVid:
 
             if not ret:  # frame src closed/no more frames
                 break
+
+            if first_frame and self.pixel_meter_converter is not None:
+                self.pixel_meter_converter.update_px_meter(frame)
 
             self.apply_pipeline(frame)
             self.f_count = self.f_count + 1

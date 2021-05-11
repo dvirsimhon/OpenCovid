@@ -1,8 +1,6 @@
 import unittest
-
-from OpenCovid.lib.config import *
 from OpenCovid.lib.opencovid import FrameStream
-
+from OpenCovid.lib.config import *
 
 class FrameStreamTestCase(unittest.TestCase):
     def setUp(self):
@@ -12,9 +10,14 @@ class FrameStreamTestCase(unittest.TestCase):
 
 
     def test_next_frame(self):
+        ret, f = self.fs_none.next_frame()
+        self.assertEqual(ret or f is not None,False,"ret should be false, Frame should not exists")
+        ret, f = self.fs_not_legal.next_frame()
+        self.assertEqual(ret or f is not None, False, "ret should be false, Frame should not exists")
 
+        ret, f = self.fs.next_frame()
+        self.assertEqual(ret and f is not None, True, "ret should be true, Frame should exists")
 
-        pass
 
     def tearDown(self):
         pass

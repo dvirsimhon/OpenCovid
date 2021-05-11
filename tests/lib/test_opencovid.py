@@ -1,7 +1,7 @@
 import unittest
+from OpenCovid.lib.config import initialize
 
-from OpenCovid.lib.opencovid import OpenCoVid
-
+from OpenCovid.lib.opencovid import OpenCoVid, FrameStream
 
 def stub_callback(frame):
     pass
@@ -20,6 +20,7 @@ class StubAnalyzeFilter:
 
 class OpenCovidTestCase(unittest.TestCase):
     def setUp(self):
+        initialize()
         self.ocv_none = OpenCoVid(callback=None,video_src=None)
         self.ocv = OpenCoVid(callback=stub_callback)
 
@@ -37,8 +38,11 @@ class OpenCovidTestCase(unittest.TestCase):
 
     def test_set_frame_src(self):
         self.ocv.set_frame_src(None)
+        self.assertEqual(None,self.ocv.frame_src,"frame source should be None")
         self.ocv.set_frame_src("blabla")
+        self.assertEqual(None, self.ocv.frame_src, "frame source should be None")
         self.ocv.set_frame_src(0)
+        self.assertEqual(not None, self.ocv.frame_src, "frame source should not be None")
         pass
 
     def test_add_analyze_filter(self):
