@@ -7,7 +7,6 @@
 😷 COVID-19 use cases powered by computer vision platform.
 
 for more information [click here.](https://serfati.github.io/open-covid/)
-v0.2
 
 ## Description
 
@@ -102,24 +101,54 @@ All the needed python packages can be found in the `requirements.txt` file.
 
 - Dataset is split into 2 sets:
 
-|_Set_|Number of images|Objects with mask|Objects without mask| |:--:|:--:|:--:|:--:| |**Training Set**| 2340 | 9050
-|1586 | |**Validation Set**| 260 | 1005 | 176 | |**Total**|2600|10055|1762|
+|_Set_|Number of images|Objects with mask|Objects without mask| 
+|:--:|:--:|:--:|:--:| 
+|**Training Set**| 2340 | 9050 |1586 | 
+|**Validation Set**| 260 | 1005 | 176 | 
+|**Total**|2600|10055|1762|
 
 
 <br>
 
 ## 📃 Usage
 
-### 🔌 Pre-trained model
+### 🔌 Pre-trained models
 
-## 🚦 Results:
+ ```bash  
+ # install requirments
+ $> python main.py --source 0  # webcam
+                            file.jpg  # image 
+                            file.mp4  # video
+                   --mask-pt yolomask.pt # masks model.pt path(s)
+                   --person-pt yolov5s.pt # person model.pt path(s)
+                   --dists  # disable social distancing analyze
+                   --persons # disable persons analyze
+                   --masks # disable masks persons analyze
+                   --show-inf # disable show inference on frame
+                   --rate # display rate speed in ms
+                   --project OpenCoVid # project name
+ ```  
+
+## Results:
+
+### :straight_ruler: Social Distancing Detector
+
+<img src="https://res.cloudinary.com/serfati/image/upload/c_scale,h_576/v1617124589/TEST__lcskli.png" width="520"/> 
+
+### 😷 Face-Mask Detector
+
+<img src="https://res.cloudinary.com/serfati/image/upload/v1617126874/3_lhhzvc.jpg" width="520"/> 
+
+<img src="https://api.wandb.ai/files/serfati/YOLOv5/pdi8u78e/media/images/Validation_5190_1.jpg" width="520"/> 
+
+## 🚦 Evaluation:
 
 All results can be found on 🚀 Weights&Baises Logging
 platform [here](https://wandb.ai/serfati/YOLOv5/runs/pdi8u78e?workspace=user-serfati).
 
-<img src="https://api.wandb.ai/files/serfati/YOLOv5/pdi8u78e/media/images/Validation_5190_1.jpg" width="520"/> 
 <br>
 <img src="https://api.wandb.ai/files/serfati/YOLOv5/pdi8u78e/media/images/Results_5204_0.png" width="520"/> 
+
 
 ## ⌨ Scripts:
 
