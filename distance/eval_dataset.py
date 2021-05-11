@@ -1,24 +1,24 @@
+import csv
 import os
-import numpy as np
-import csv, sys
+import sys
 import cv2
-
 import matplotlib.pyplot as plt
-sys.path.insert(0, '..')
+import numpy as np
+sys.path.insert(0, '../')
 from lib.config import initialize
-sys.path.insert(0, '../../yolomask/')
-
-
-# sys.path.insert(0, 'yolomask/')
+sys.path.insert(0, '../yolomask/')
 from yolomask.mask_inference import YoloMask
 from yolomask.person_inference import YoloPerson
 from distance.social_distance import SocialDistance
+from lib.opencovid import OpenCoVid
 
 initialize()
 
-from OpenCovid.lib.opencovid import OpenCoVid
+
+
 
 main_dataset_folder_path = "D:\\University\\FourthYear\\Final Project\\Program\\DetectPersons\\detect_people\\dataset"
+plots_save_folder = "D:\\University\\FourthYear\\Final Project\\Program\\DetectPersons\\detect_people\\plots"
 
 def load_dataset(dataset_folder_path):
 
@@ -94,7 +94,7 @@ class EuclidEvaluator(Evaluator):
         c2_x, c2_y = c2
 
         euclid_dist = np.sqrt(np.square(float(c1_x) - float(c2_x)) + np.square(float(c1_y) - float(c2_y)))
-
+        euclid_dist = euclid_dist if euclid_dist < 400 else 400
         return euclid_dist
 
 class EuclidNoiseEvaluator(Evaluator):
@@ -154,7 +154,7 @@ class OpenCovidEvaluator(Evaluator):
     def is_c_in_box(self, c, box):
         (c_x,c_y) = c
         (x1,y1,x2,y2) = box
-        return c_x >= x1 and c_x <= x2 and c_y >= y1 and c_y <= y2
+        return float(c_x) >= x1 and float(c_x) <= x2 and float(c_y) >= y1 and float(c_y) <= y2
 
 
     def eval_pair(self, c1, c2):
@@ -297,7 +297,7 @@ def eval_results(y_pred_by_eval,y_true_list,error_legal_margin=0.0):
     print("-" * 20)
     print("MSE Comparison:")
     for evaluator in result.keys():
-        print("{} = {}".format(evaluator.get_name(), np.round(result[evaluator]["MSE"].sum(),3)))
+        print("{}: MSE = {}, Log(MSE) = {}".format(evaluator.get_name(), np.round(result[evaluator]["MSE"].sum(),3), np.log(np.round(result[evaluator]["MSE"].sum()),3)))
     print("-" * 20)
     print("=" * 60)
     print()
@@ -334,10 +334,12 @@ def eval_results(y_pred_by_eval,y_true_list,error_legal_margin=0.0):
     ax = fig.add_subplot(111)
     bp = ax.boxplot(data_box_plot)
     ax.set_xticklabels(names)
+    plt.ylabel("Distance Estimation Error (cm)")
     # Adding title
     plt.title("Distance Error (cm) Estimator Comparison, Error Margin = {}".format(error_legal_margin))
     # show plot
-    plt.show()
+    # plt.show()
+    plt.savefig(os.path.join(plots_save_folder, 'Distance Error (cm) Estimator Comparison, Error Margin = {}'.format(error_legal_margin)) + '.png')
     # ==========================================================================================
 
     # ===== Plot Img - Estimator ===============================================================
@@ -361,7 +363,8 @@ def eval_results(y_pred_by_eval,y_true_list,error_legal_margin=0.0):
     plt.title('log MSE per estimator, Error Margin = {}'.format(error_legal_margin))
     plt.xticks(ind,names)
 
-    plt.show()
+    # plt.show()
+    plt.savefig(os.path.join(plots_save_folder,'log MSE per estimator, Error Margin = {}'.format(error_legal_margin)) + '.png')
 
     data_bar_plot = data_bar_plot.T
     N = data_bar_plot.shape[1]
@@ -384,7 +387,8 @@ def eval_results(y_pred_by_eval,y_true_list,error_legal_margin=0.0):
     plt.title('log MSE per img, Error Margin = {}'.format(error_legal_margin))
     plt.xticks(ind, img_names)
 
-    plt.show()
+    # plt.show()
+    plt.savefig(os.path.join(plots_save_folder, 'log MSE per img, Error Margin = {}'.format(error_legal_margin)) + '.png')
     # ==========================================================================================
 
     # ===== Plot batch - Estimator ===============================================================
@@ -408,7 +412,8 @@ def eval_results(y_pred_by_eval,y_true_list,error_legal_margin=0.0):
     plt.title('log MSE per estimator, Error Margin = {}'.format(error_legal_margin))
     plt.xticks(ind, names)
 
-    plt.show()
+    # plt.show()
+    plt.savefig(os.path.join(plots_save_folder, 'log MSE per estimator batch, Error Margin = {}'.format(error_legal_margin)) + '.png')
 
     data_batch_bar_plot = data_batch_bar_plot.T
     N = data_batch_bar_plot.shape[1]
@@ -431,17 +436,19 @@ def eval_results(y_pred_by_eval,y_true_list,error_legal_margin=0.0):
     plt.title('log MSE per batch, Error Margin = {}'.format(error_legal_margin))
     plt.xticks(ind, names_batch)
 
-    plt.show()
+    # plt.show()
+    plt.savefig(os.path.join(plots_save_folder,'log MSE per batch, Error Margin = {}'.format(error_legal_margin)) + '.png')
     # ==========================================================================================
 
 
-def t_estimators(data,evaluators=[IdealEvaluator(),EuclidEvaluator(),OpenCovidEvaluator(OpenCoVid(None),"OpenCovid - 1 origin")], margins=[0.0,30.0,50.0,150.0,400.0],verbose=False):
+def t_estimators(data,evaluators=[], margins=[0.0,10.0,30.0,50.0,100.0,200.0],verbose=False):
 
     # Eval
     y_pred_by_eval = {}
     y_true_list = {}
 
     for evaluator in evaluators:
+        print("Evaluate with - {}".format(evaluator.get_name()))
         y_pred_by_eval[evaluator] = []
         y_true_list[evaluator] = []
 
@@ -467,13 +474,16 @@ def t_estimators(data,evaluators=[IdealEvaluator(),EuclidEvaluator(),OpenCovidEv
         eval_results(y_pred_by_eval,y_true_list,margin)
 
 data = load_dataset(main_dataset_folder_path)
+
 init_filters = {}
-
-init_filters["person"] = YoloPerson()
+init_filters["person"] = YoloPerson(weights="../yolomask/weights/yolov5s.pt")
 init_filters["dists"] = SocialDistance()
-init_filters["masks"] = YoloMask()
+init_filters["masks"] = YoloMask(weights="../yolomask/weights/yolomask.pt")
 
-evaluators=[IdealEvaluator(),EuclidEvaluator(),OpenCovidEvaluator(OpenCoVid(None,init_filters=init_filters),"OpenCovid - 1 origin")]
+ovc = OpenCoVid(None,init_filters=init_filters)
+evaluators=[IdealEvaluator(),EuclidEvaluator(),OpenCovidEvaluator(ovc,"OpenCovid - 1 origin"),OpenCovidEvaluator(ovc,"OpenCovid - 2 origins")]
+
+
 t_estimators(data,evaluators=evaluators)
 print()
 print("=" * 50)
