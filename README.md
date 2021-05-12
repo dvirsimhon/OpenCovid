@@ -116,7 +116,7 @@ All the needed python packages can be found in the `requirements.txt` file.
 
  ```bash  
  # install requirments
- $> python main.py --source 0  # webcam
+ $> python main.py --source 0         # webcam
                             file.jpg  # image 
                             file.mp4  # video
                    --mask-pt yolomask.pt # masks model.pt path(s)
@@ -152,8 +152,7 @@ platform [here](https://wandb.ai/serfati/YOLOv5/runs/pdi8u78e?workspace=user-ser
 
 ## ⌨ Scripts:
 
-- `opencovid.py` - runs main application
-- `demo.py` - runs a simple demo on a video footage
+- `main.py` - runs main application
 
 ## Team Members:
 

@@ -1,6 +1,6 @@
 import unittest
-from OpenCovid.lib.opencovid import FrameStream
-from OpenCovid.lib.config import *
+from lib.opencovid import FrameStream
+from lib.config import *
 
 class FrameStreamTestCase(unittest.TestCase):
     def setUp(self):

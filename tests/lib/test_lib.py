@@ -1,7 +1,7 @@
 import unittest
 
-from OpenCovid.tests.lib.test_framestream import FrameStreamTestCase
-from OpenCovid.tests.lib.test_opencovid import OpenCovidTestCase
+from tests.lib.test_framestream import FrameStreamTestCase
+from tests.lib.test_opencovid import OpenCovidTestCase
 
 
 def get_unit_test_suite():

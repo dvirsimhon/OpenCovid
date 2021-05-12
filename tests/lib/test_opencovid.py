@@ -1,7 +1,7 @@
 import unittest
-from OpenCovid.lib.config import initialize
+from lib.config import initialize
 
-from OpenCovid.lib.opencovid import OpenCoVid, FrameStream
+from lib.opencovid import OpenCoVid, FrameStream
 
 def stub_callback(frame):
     pass
