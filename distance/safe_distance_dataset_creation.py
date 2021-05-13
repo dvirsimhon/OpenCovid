@@ -1,8 +1,11 @@
-import cv2, os
+import cv2, os, sys
 # from detect_people import people_yolo_detector
+sys.path.insert(0, '../')
+from lib.config import initialize
+sys.path.insert(0, '../yolomask/')
 from OpenCovid.yolomask.person_inference import YoloPerson
 from datetime import datetime
-
+initialize()
 
 source_folder_path = "D:\\University\\FourthYear\\Final Project\\Program\\DetectPersons\\detect_people\\demo\\distance_db\\Data - Safe distance\\final\\batch2"
 res_folder_path = "D:\\University\\FourthYear\\Final Project\\Program\\DetectPersons\\detect_people\\dataset"
@@ -110,7 +113,7 @@ def display_stage(frame):
     fontScale = frame.img.shape[1] / w_w
 
     frame.pairs = []
-    print(">>['d'=Discard pair,'n'=skip to next img,'q'=finish batch and close]<<")
+    print(">> HELP (COMMANDS, keybord has to be in english!):\n* 't' (or any char not mention here) = Tag pair\n* 'd' = Discard pair\n* 'n' = skip to next img\n* 'q' = finish batch and close")
     for i in range(len(frame.people_centroid)):
         for j in range(i,len(frame.people_centroid)):
             if i != j:
@@ -199,7 +202,7 @@ def start_tag_creation_program(src_folder_path, target_folder_path, initial_idx=
     n_img = 0 # add initial_idx to each name, counter serves as img generated in dataset
     n_samples = 0
 
-    detector = YoloPerson()
+    detector = YoloPerson(weights="../yolomask/weights/yolov5s.pt")
 
 
     for sample_file_name in os.listdir(src_folder_path):
@@ -251,13 +254,13 @@ def start_tag_creation_program(src_folder_path, target_folder_path, initial_idx=
 
 
 
-# cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
-#
-# n_files, n_img, n_samples = analyze(source_folder_path,res_folder_path,initial_idx=in_idx)
-# print("Total #Files In Original Data: ", n_files)
-# print("Total #Img In Dataset: ", n_img)
-# print("Total #samples In Dataset: ", n_samples)
-# cv2.destroyAllWindows()
+cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
+
+n_files, n_img, n_samples = start_tag_creation_program(source_folder_path,res_folder_path,initial_idx=in_idx)
+print("Total #Files In Original Data: ", n_files)
+print("Total #Img In Dataset: ", n_img)
+print("Total #samples In Dataset: ", n_samples)
+cv2.destroyAllWindows()
 
 def summary_data(db_folder,threshold_dist):
 
